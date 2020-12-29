@@ -395,7 +395,7 @@ function onMouseMove( event ) {
     // Toggle rotation bool for meshes that we clicked
     if ( intersects.length > 0 ) {
 
-        if(intersects[0].object){
+        if(intersects[0].object.userData.link){
             // current_project.innerHTML = intersects[0].object.userData.title;
             for (let index = 0; index < buttons.length; index++) {
                     if(intersects[0].object.userData.title.innerHTML === buttons[index].innerHTML){
