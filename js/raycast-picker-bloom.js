@@ -15,7 +15,9 @@ let buttons = []
 
 for (let index = 0; index < teasers.length; index++) {
     const element = teasers[index].getElementsByTagName("h2")[0];
-    buttons.push(element)
+    if(element != undefined){
+        buttons.push(element);
+    }
 }
 
 ///load manger
@@ -392,12 +394,13 @@ function onMouseMove( event ) {
 
     // See if the ray from the camera into the world hits one of our meshes
     var intersects = raycaster.intersectObjects(scene.children, true);
+    
     // Toggle rotation bool for meshes that we clicked
     if ( intersects.length > 0 ) {
 
         if(intersects[0].object.userData.link){
-            // current_project.innerHTML = intersects[0].object.userData.title;
             for (let index = 0; index < buttons.length; index++) {
+               
                     if(intersects[0].object.userData.title.innerHTML === buttons[index].innerHTML){
                         buttons[index].style.background = "#2CFC0A";
                     } else {
