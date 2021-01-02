@@ -51,6 +51,7 @@ textureLoader.crossOrigin = "Anonymous";
 /// scene variables
 let camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 1, 10000 );
 let scene = new THREE.Scene();
+// scene.background = new THREE.Color("0x0019ff")
 let clock = new THREE.Clock();
 let raycaster = new THREE.Raycaster();
 let renderer = new THREE.WebGLRenderer();

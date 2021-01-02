@@ -158,6 +158,22 @@ button:focus{
 	display: none;
 }
 
+#canvas-title{
+	margin-top: 15px;
+	border-bottom: 2px var(--neongreen) solid;
+	font-family: 'sinistrest_caroline', cursive;
+	padding-left: 15px;
+	position: fixed;
+	display: none;
+	white-space: nowrap;
+
+}
+
+
+
+
+
+
 .hide-cursor{
 	cursor: none;
 }

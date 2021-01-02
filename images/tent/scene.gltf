@@ -179,7 +179,7 @@
   ],
   "meshes": [
     {
-      "name": "tent_Tent_0",
+      "name": "HOUSE OF KILLING Camping",
       "primitives": [
         {
           "attributes": {
@@ -252,7 +252,7 @@
     },
     {
       "mesh": 0,
-      "name": "tent_Tent_0"
+      "name": "camp2020_solitude"
     }
   ],
   "samplers": [

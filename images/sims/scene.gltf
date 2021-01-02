@@ -101,7 +101,7 @@
           }
         }
       ],
-      "name": "Plumbob|PlumbobAction.001",
+      "name": "Avatar Control System",
       "samplers": [
         {
           "input": 4,
@@ -116,7 +116,7 @@
       "author": "Uriel Bromberg (https://sketchfab.com/Uriel.Bromberg.Shaw)",
       "license": "CC-BY-NC-4.0 (http://creativecommons.org/licenses/by-nc/4.0/)",
       "source": "https://sketchfab.com/3d-models/the-sims-plumbob-96c975f02acb41d3b8e485db8ecffd3b",
-      "title": "The Sims: Plumbob"
+      "title": "Avatar Control System"
     },
     "generator": "Sketchfab-8.72.3",
     "version": "2.0"
@@ -203,7 +203,7 @@
   ],
   "meshes": [
     {
-      "name": "Plumbob_Material.001_0",
+      "name": "Avatar Control System 2.0",
       "primitives": [
         {
           "attributes": {
@@ -310,7 +310,7 @@
     },
     {
       "mesh": 0,
-      "name": "Plumbob_Material.001_0"
+      "name": "Avatar Control System _ Material 001"
     }
   ],
   "samplers": [

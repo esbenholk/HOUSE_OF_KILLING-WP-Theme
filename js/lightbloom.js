@@ -7,13 +7,14 @@ import { EffectComposer } from '/wp-content/themes/house_of_killing/three/exampl
 import { RenderPass } from '/wp-content/themes/house_of_killing/three/examples/jsm/postprocessing/RenderPass.js';
 import { ShaderPass } from '/wp-content/themes/house_of_killing/three/examples/jsm/postprocessing/ShaderPass.js';
 import { UnrealBloomPass } from '/wp-content/themes/house_of_killing/three/examples/jsm/postprocessing/UnrealBloomPass.js';
+import { FilmPass } from '/wp-content/themes/house_of_killing/three/examples/jsm/postprocessing/FilmPass.js';
 
 
 
 /// canvas element
 let canvas = document.getElementById("canvas");
 
-
+let islandDescriptors = ["avatar island", "content redistribution_content003", "decay_active002", "shy_boy1992", "island", "texture_composition_collage2.0", "all I am is more of you", "camping", "skeleton", "collage2020_finalVersion11"]
 ///loading manager
 const manager = new THREE.LoadingManager();
 
@@ -46,7 +47,16 @@ renderer.autoClear = false;
 
 canvas.appendChild( renderer.domElement );
 
+
+////scene titles
+let title = document.getElementById("canvas-title")
+
+
 /// scene variables
+let raycaster = new THREE.Raycaster();
+let mouse = new THREE.Vector2();
+
+
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera( 55, window.innerWidth / window.innerHeight, 1, 20000 );
 camera.position.set( 10, 100, 100 );
@@ -107,9 +117,22 @@ const finalPass = new ShaderPass(
 
 finalPass.needsSwap = true;
 
+
 const finalComposer = new EffectComposer( renderer );
+
 finalComposer.addPass( renderScene );
+const filmPass = new FilmPass(
+    0.35,   // noise intensity
+    0.025,  // scanline intensity
+    1,    // scanline count
+    false,  // grayscale
+);
+filmPass.renderToScreen = true;
+finalComposer.addPass( filmPass);
+
 finalComposer.addPass( finalPass );
+
+
 
 const darkMaterial = new THREE.MeshBasicMaterial( { color: "black" } );
 const materials = {};
@@ -454,6 +477,8 @@ function createFlag(url, x, z, rotationY, xvalue, yvalue, zvalue){
         alphaTest: 0.5
     } );
 
+    object.userData = {title: ["empty flag", "tell me what to say", "declare (in)dependence"]}
+
     var poleGeo = new THREE.BoxBufferGeometry( 5, 375, 5 );
     var poleMat = new THREE.MeshLambertMaterial();
 
@@ -587,12 +612,15 @@ function setupScene() {
 
     water.rotation.x = - Math.PI / 2;
     water.position.y = -20;
+    water.userData = {title: ["ocean"]}
+
     scene.add( water );
 
     // Skybox
 
     const sky = new Sky();
     sky.scale.setScalar( 10000 );
+    sky.userData = {title: ["sky"]}
 
     scene.add( sky );
 
@@ -635,13 +663,14 @@ function setupScene() {
     ///add objects
     createFlag('/wp-content/themes/house_of_killing/images/waternormals.jpg', 15, 15, 1.5, 100, 200, 100);
 
-    addObjects( '/wp-content/themes/house_of_killing/images/tent/scene.gltf', -1, -20, -2, 10, true);
+    addObjects( '/wp-content/themes/house_of_killing/images/tent/scene.gltf', -1, -20, -2, 10, true, "tent");
 
-    addObjects( '/wp-content/themes/house_of_killing/images/remains/scene.gltf', -50, -28, 0, 19, false);
+    addObjects( '/wp-content/themes/house_of_killing/images/remains/scene.gltf', -50, -28, 0, 19, false, "skeleton");
     addObjects( '/wp-content/themes/house_of_killing/images/sims/scene.gltf', 39, 0, -45, 0.01, false, true);
 
 
     window.addEventListener( 'resize', onWindowResize, false );
+    canvas.addEventListener( 'mousemove', onMouseMove, false );
 
     animate(0);
 
@@ -661,6 +690,8 @@ function animate(now) {
 }
 
 function render() {
+
+    
 
 
     if(rotate===true){
@@ -746,7 +777,7 @@ function render() {
 
 
 
-function addObjects(url,x,y,z, scale, rotate, rotation){
+function addObjects(url,x,y,z, scale, rotate, item){
     const onProgress = () => {};
     const onError = ( errorMessage ) => { console.log( errorMessage ); };
 
@@ -759,17 +790,15 @@ function addObjects(url,x,y,z, scale, rotate, rotation){
     model.position.x = x;
     model.position.y = y;
     model.position.z = z;
-    
+
     if(rotate===true){
         rotateObject(model, -2,-2,4);
-        // rayCaster.intersectObjects( model.children, true )
     }
-    if(rotation===true){
+    if(item===true){
         objects.push(model)
         model.layers.enable( BLOOM_SCENE );
-        // rayCaster.intersectObjects( model.children, true )
     }
-   
+
     scene.add( model );
 
     }, onProgress, onError );
@@ -802,5 +831,59 @@ function onWindowResize() {
     render();
 }
 
+
+function onMouseMove( event ) {
+
+    
+
+    mouse.x = ( event.clientX / renderer.domElement.clientWidth ) * 2 - 1;
+    mouse.y = - ( event.clientY / renderer.domElement.clientHeight ) * 2 + 1;
+    raycaster.setFromCamera( mouse, camera );
+
+
+    // See if the ray from the camera into the world hits one of our meshes
+    var intersects = raycaster.intersectObjects(scene.children, true);
+    
+    // Toggle rotation bool for meshes that we clicked
+    if ( intersects.length > 0 ) {
+
+        console.log(intersects[0].object);
+
+        if(intersects[0].object.userData.title){
+          console.log(intersects[0].object.userData.title);
+          
+          title.innerHTML = intersects[0].object.userData.title[Math.floor(Math.random() * intersects[0].object.userData.title.length)];
+
+        } else if(intersects[0].object.userData.name){
+            title.innerHTML = intersects[0].object.userData.name;
+
+        } else {
+            title.innerHTML = islandDescriptors[Math.floor(Math.random() * islandDescriptors.length)]
+        }
+        
+    }
+
+}
+
+
+window.onload = function(){
+    var x, y;
+// On mousemove use event.clientX and event.clientY to set the location of the div to the location of the cursor:
+    window.addEventListener('mousemove', function(event){
+        x = event.clientX;
+        y = event.clientY;                    
+        if ( typeof x !== 'undefined' ){
+            title.style.left = x + "px";
+            title.style.top = y + "px";
+        }
+    }, false);
+}
+
+canvas.addEventListener("mouseover", function(){
+    title.style.display = "block"
+})
+canvas.addEventListener("mouseleave", function(){
+    title.style.display = "none"
+})
 
 

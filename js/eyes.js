@@ -89,9 +89,12 @@ jQuery(document).ready(function($) {
 
     let menu_open = false;
 
-    console.log("document ready");
     //Remove transition delay on products
-    setTimeout(function(){ $("body").removeClass('inku-animations-delay'); }, 2000);
+    setTimeout(function(){ 
+        $("body").removeClass('inku-animations-delay');         
+    }, 2000);
+
+
 
 
     setTimeout(function(){ $("body").removeClass('pace-running'); $("body").addClass('pace-done'); }, 4000);
@@ -137,6 +140,15 @@ jQuery(document).ready(function($) {
 
     $(document).ready(function() {
         $("inku-preloader").fadeOut(20000);
+
+
+        if(window.location === "/"){
+            setTimeout(function(){ 
+                $('body').toggleClass('menu-open');
+            }, 5000);
+        }
+   
+
 
         if(document.getElementById("footer")){
             image1.src = gifs[Math.floor(Math.random() * gifs.length)];

@@ -1,4 +1,4 @@
-<?php /* Template Name: premade model */ ?>
+<?php /* Template Name: videotextured landscape*/ ?>
 
 
 <?php
@@ -22,26 +22,29 @@ get_header(); ?>
      if($my_excerpt !='') {
         $my_excerpt = $my_excerpt;
      } else{
-        $my_excerpt = "";
+        $my_excerpt = "Find Me in the Toilet @ Parties <br> // curated by Clusterduck Collective 4 Arebyte on Screen";
      }
 ?>
 
-<?php $src = get_stylesheet_directory_uri().'/js/lightbloom.js';?>
+<?php $src = get_stylesheet_directory_uri().'/js/videotexture.js';?>
 
-<script type="module" src="<?php echo esc_url($src); ?>"></script>
+<script type="module" src="https://cdnjs.cloudflare.com/ajax/libs/simplex-noise/2.4.0/simplex-noise.min.js
+"></script>
+
+<script type="module" src="<?php echo esc_url($src); ?>"></script> 
 
 <div id="threeDfrontpage" class="page col-md-12">
-    <div  id='loading-screen' class="loading-container">
-            <div id="loading-status" class="loading-circle">
-                <div class="loader">
-                    <p>loading... <br>
-                    </p>
+    <div id='loading-screen' class="loading-container-pink">
+                <div id="loading-status" class="loading-circle green">
+                    <div class="loader green" id="startbutton"> 
+                    </div>
+                    <div class="start-info" >
+                            <?php echo $my_excerpt ?>
+                            <p>click to start</p>
+                    </div>
                 </div>
-            </div>
-    </div>
-	
-	<div id="canvas" class="online-exhibition-canvas">
-        <p id="canvas-title">avatar island</p>
+        </div>
+        <div id="canvas" class="online-exhibition-canvas">
 
         <div class="instruction">	
 					<div class="absolute left flex-row">
