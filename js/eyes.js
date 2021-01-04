@@ -142,7 +142,8 @@ jQuery(document).ready(function($) {
         $("inku-preloader").fadeOut(20000);
 
 
-        if(window.location === "/"){
+        if(window.location.pathname === "/"){
+            console.log("homepage");
             setTimeout(function(){ 
                 $('body').toggleClass('menu-open');
             }, 5000);

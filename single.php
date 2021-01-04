@@ -24,7 +24,6 @@ get_header();
 				<div class="post-menu">
 					<div id="archive">
 						<?php if ( !function_exists('dynamic_sidebar') || !dynamic_sidebar('sidebar-2') ) ?>
-
 					</div>
 				</div>
 

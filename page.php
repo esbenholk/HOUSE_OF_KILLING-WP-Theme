@@ -15,18 +15,20 @@
 get_header();
 ?>
 
-	<main id="primary" class="site-main">
+<?php $src = get_stylesheet_directory_uri().'/js/tube.js';?>
 
+<script type="module" src="<?php echo esc_url($src); ?>"></script>
+
+
+
+<div id="canvas" class="canvas-background"> </div>
+
+<main id="primary" class="site-main page-main">
 		<?php
 		while ( have_posts() ) :
 			the_post();
 
 			get_template_part( 'template-parts/content', 'page' );
-
-			// If comments are open or we have at least one comment, load up the comment template.
-			if ( comments_open() || get_comments_number() ) :
-				comments_template();
-			endif;
 
 		endwhile; // End of the loop.
 		?>
@@ -34,5 +36,34 @@ get_header();
 	</main><!-- #main -->
 
 <?php
-get_sidebar();
 get_footer();
+
+?>
+<script type="x-shader/x-vertex" id="vertexshader">
+
+varying vec2 vUv;
+
+void main() {
+
+	vUv = uv;
+
+	gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+
+}
+
+</script>
+
+<script type="x-shader/x-fragment" id="fragmentshader">
+
+uniform sampler2D baseTexture;
+uniform sampler2D bloomTexture;
+
+varying vec2 vUv;
+
+void main() {
+
+	gl_FragColor = ( texture2D( baseTexture, vUv ) + vec4( 1.0 ) * texture2D( bloomTexture, vUv ) );
+
+}
+
+</script>

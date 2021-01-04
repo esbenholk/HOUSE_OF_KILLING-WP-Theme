@@ -36,7 +36,7 @@
      if($my_excerpt !='') {
         $my_excerpt = $my_excerpt;
      } else{
-        $my_excerpt = "Jennifer Aniston Superfans Digital Tarot Landscape™️";
+        $my_excerpt = "Esben Holk @ HOUSE OF KILLING";
      }
 ?>
 <header id="header" class="site-header ">
@@ -122,7 +122,7 @@
          
 
 
-<main id="main" class="site-main ">
+<main id="main" class="site-main">
 
     <div id="container" class="container">
 

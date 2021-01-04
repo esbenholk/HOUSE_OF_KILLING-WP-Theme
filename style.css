@@ -168,6 +168,10 @@ button:focus{
 	white-space: nowrap;
 
 }
+.canvas-background{
+	position: fixed;
+	top:0;
+}
 
 
 
@@ -650,6 +654,28 @@ main site
 }
 
 
+.page-main{
+	position: relative;
+	top: 0;
+	margin: 15px;
+	max-width: 70%;
+	padding-top:10vh;
+	padding-bottom: 10vh;
+	height: auto;
+}
+
+.page-content{
+	padding:0;
+	margin:0;
+	height: 100%;
+}
+.page-content p{
+	margin-top: 15px;
+	/* mix-blend-mode: difference;
+	color: rgb(255,255,0); */
+}
+
+
 /*
 ==========================================
 footer
@@ -669,7 +695,7 @@ footer
 	color: var(--neongreen);
 	padding-top: 15px;
 	padding-bottom: 115px;
-	background-color: blue;
+	/* background-color: blue; */
 
 }
 #imagecontainer{

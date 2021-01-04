@@ -30,7 +30,7 @@ get_header(); ?>
 
 <script type="module" src="<?php echo esc_url($src); ?>"></script>
 
-<div id="threeDfrontpage" class="page col-md-12">
+<div id="threeDfrontpage" class="col-md-12">
     <div  id='loading-screen' class="loading-container">
             <div id="loading-status" class="loading-circle">
                 <div class="loader">
