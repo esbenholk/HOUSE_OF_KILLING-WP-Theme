@@ -127,7 +127,7 @@ function create_posttype() {
     // CPT Options
         array(
             'labels' => array(
-                'name' => __( 'Project' ),
+                'name' => __( 'Projects' ),
                 'singular_name' => __( 'Project' )
             ),
             'public' => true,
@@ -139,6 +139,7 @@ function create_posttype() {
  
         )
 	);
+
 }
 add_action( 'init', 'create_posttype' );
 
@@ -200,9 +201,10 @@ function house_of_killing_scripts() {
 	wp_enqueue_script( 'tickers', get_template_directory_uri() . '/js/tickers.js', array('jquery'), true );
 	wp_enqueue_script( 'eyes', get_template_directory_uri() . '/js/eyes.js', array('jquery'), true );
 	wp_enqueue_script( 'script', get_template_directory_uri() . '/js/script.js', array('jquery'), true );
-
 }
 add_action( 'wp_enqueue_scripts', 'house_of_killing_scripts' );
+
+
 
 /**
  * Implement the Custom Header feature.

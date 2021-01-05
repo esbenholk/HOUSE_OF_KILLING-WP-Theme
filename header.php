@@ -40,7 +40,7 @@
      }
 ?>
 <header id="header" class="site-header ">
-            <div class="flex-row">
+            <div class="flex-row maxheight30">
                         <button class="nav-btn"" id="nav-btn" type="button" class="menu-toggle" data-toggle="collapse" aria-controls="primary-menu" aria-expanded="false">
                             <div class="eyes">   
                                 <div class="eye">

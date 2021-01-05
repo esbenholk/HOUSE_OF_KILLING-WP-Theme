@@ -115,6 +115,29 @@ li{
 	padding: 15px;
 	font-family: 'sinistrest_caroline', cursive;
 }
+.nav-links{
+	width: 100%;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	z-index: 99999;
+}
+.nav-previous,
+.nav-next{
+	width: 45%;
+	text-align: center;
+	border: 2px var(--neongreen) solid;
+	padding: 5px;
+	border-radius: 0 15px 0 0 ;
+}
+.nav-previous:hover,
+.nav-next:hover{
+	background-color: var(--neongreen);
+	
+}
+
+
+
 #buttons button{
 	border: 2px var(--neongreen) solid;
 	border-radius: 0 20px 0 0 ;
@@ -368,13 +391,13 @@ tickers
 ==========================================
 */
 
+
   #ticker1{
 	position: relative;
 	width: auto;
 	overflow: hidden;
-	height: auto;
+	height: 30px;
 	width: auto;
-	font-size: 4vh;
 	border: 2px var(--neongreen) solid;
   }
 
@@ -384,9 +407,8 @@ tickers
 	left: 0;
 	width: auto;
 	overflow: hidden;
-	height: auto;
+	height: 30px;
 	width: auto;
-	font-size: 4vh;
 	border: 2px var(--neongreen) solid;
 	margin: 15px;
 	width: calc(100vw - 136px);
@@ -663,6 +685,20 @@ main site
 	padding-bottom: 10vh;
 	height: auto;
 }
+.error-main{
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	text-align: right;
+	width: 100%;
+	height: 100vh;
+	z-index: 99999;
+}
+.error p{
+	text-align: center
+}
 
 .page-content{
 	padding:0;
@@ -768,10 +804,12 @@ Menu
 .nav-btn {
 	width: 100px;
 	z-index: 99999999;
-	height: auto;
+	height: 34px;
+	min-height: 100%;
 	width: 100px;
 	min-width: 100px;
 	border: 2px solid var(--neongreen);
+	
 	background-color: var(--neongreen);
 }
 .nav-btn:focus{
@@ -1106,17 +1144,7 @@ Menu
   }
 
 
-.post-navigation{
-	position: fixed;
-	bottom: 0;
-	left: 0;
-	border: 2px var(--neongreen) solid;
-	background-color: var(--neongreen);
-	border-radius: 0 15px 0 0;
-	margin: 15px;
-	padding: 15px;
-	z-index: 9;
-}
+
 
 .post-navigation h2{
 	display: none;

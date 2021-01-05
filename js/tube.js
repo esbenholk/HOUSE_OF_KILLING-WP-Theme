@@ -1,4 +1,7 @@
 import * as THREE from '/wp-content/themes/house_of_killing/three/build/three.module.js';
+import { GlitchPass } from 'https://threejsfundamentals.org/threejs/resources/threejs/r122/examples/jsm/postprocessing/GlitchPass.js'
+import { EffectComposer } from '/wp-content/themes/house_of_killing/three/examples/jsm/postprocessing/EffectComposer.js';
+import { RenderPass } from '/wp-content/themes/house_of_killing/three/examples/jsm/postprocessing/RenderPass.js';
 
 let canvas = document.getElementById("canvas")
 
@@ -8,6 +11,9 @@ var height = window.innerHeight;
 
 
 var renderer = new THREE.WebGLRenderer({ antialias: true });
+
+
+
 var scene = new THREE.Scene();
 var camera = new THREE.PerspectiveCamera(75, width / height, 1, 10000);
 
@@ -18,8 +24,15 @@ canvas.appendChild(renderer.domElement);
 
 scene.add(camera);
 
-camera.position.z = - 170;
+camera.position.z = - 100;
 camera.lookAt(new THREE.Vector3());
+
+let composer = new EffectComposer( renderer );
+composer.addPass( new RenderPass( scene, camera ) );
+
+let glitchPass = new GlitchPass(9);
+glitchPass.enabled = false;
+composer.addPass( glitchPass );
 
 var l = 100;
 var phi = Math.floor(Math.random() * 5) + 1;
@@ -43,12 +56,12 @@ for (var i = 0; i < l; i++) {
 
 var light = new THREE.PointLight(0xfeabff, 2, 200);
 
-var geometry = new THREE.TubeGeometry(new THREE.SplineCurve3(vertices), 300, 40, 32, false);
+var geometry = new THREE.TubeGeometry(new THREE.SplineCurve3(vertices), 300, 100, 32, false);
 var material = new THREE.MeshPhongMaterial({
   color: new THREE.Color(0xfeabff),
   side: THREE.DoubleSide,
   shininess: 25000,
-  emissive: new THREE.Color(0x19ff00),
+  emissive: new THREE.Color('rgb(0,0,255)'),
   metal: true
 });
 
@@ -66,7 +79,8 @@ loop();
 function loop() {
   requestAnimationFrame(loop);
   mesh.rotation.y -= 1 / 300;
-  renderer.render(scene, camera);
+//   renderer.render(scene, camera);
+  composer.render();
 }
 
 function resize() {
@@ -87,4 +101,22 @@ function EasingQuadraticIn(k) {
 
 function seat(t) {
   return (Math.pow(2 * t - 1, 3) + 1) / 2;
+}
+
+
+window.addEventListener("mousemove", function(){
+   
+})
+
+var timeout;
+
+window.addEventListener("mousemove", function() {
+    glitchPass.enabled = true;
+    if (timeout) clearTimeout(timeout);
+    timeout = setTimeout(mouseStop, 10);
+});
+
+function mouseStop() {
+    glitchPass.enabled = false;
+
 }

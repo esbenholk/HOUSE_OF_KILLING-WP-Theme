@@ -1,8 +1,13 @@
 <?php
 /**
- * The template for displaying 404 pages (not found)
+ * The template for displaying 404 error
  *
- * @link https://codex.wordpress.org/Creating_an_Error_404_Page
+ * This is the template that displays all pages by default.
+ * Please note that this is the WordPress construct of pages
+ * and that other 'pages' on your WordPress site may use a
+ * different template.
+ *
+ * @link https://developer.wordpress.org/themes/basics/template-hierarchy/
  *
  * @package HOUSE_of_KILLLING
  */
@@ -10,51 +15,25 @@
 get_header();
 ?>
 
-	<main id="primary" class="site-main">
+<?php $src = get_stylesheet_directory_uri().'/js/tube.js';?>
 
-		<section class="error-404 not-found">
-			<header class="page-header">
-				<h1 class="page-title"><?php esc_html_e( 'Oops! That page can&rsquo;t be found.', 'house_of_killing' ); ?></h1>
-			</header><!-- .page-header -->
+<script type="module" src="<?php echo esc_url($src); ?>"></script>
 
-			<div class="page-content">
-				<p><?php esc_html_e( 'It looks like nothing was found at this location. Maybe try one of the links below or a search?', 'house_of_killing' ); ?></p>
 
-					<?php
-					get_search_form();
+<div id="canvas" class="canvas-background"> 
 
-					the_widget( 'WP_Widget_Recent_Posts' );
-					?>
+</div>
 
-					<div class="widget widget_categories">
-						<h2 class="widget-title"><?php esc_html_e( 'Most Used Categories', 'house_of_killing' ); ?></h2>
-						<ul>
-							<?php
-							wp_list_categories(
-								array(
-									'orderby'    => 'count',
-									'order'      => 'DESC',
-									'show_count' => 1,
-									'title_li'   => '',
-									'number'     => 10,
-								)
-							);
-							?>
-						</ul>
-					</div><!-- .widget -->
+<main id="primary" class="error-main">
+	<div class="error">
+		<a href="/"><img src="/wp-content/themes/house_of_killing/icons/ghosticon.png"/></a></p>
 
-					<?php
-					/* translators: %1$s: smiley */
-					$house_of_killing_archive_content = '<p>' . sprintf( esc_html__( 'Try looking in the monthly archives. %1$s', 'house_of_killing' ), convert_smilies( ':)' ) ) . '</p>';
-					the_widget( 'WP_Widget_Archives', 'dropdown=1', "after_title=</h2>$house_of_killing_archive_content" );
-
-					the_widget( 'WP_Widget_Tag_Cloud' );
-					?>
-
-			</div><!-- .page-content -->
-		</section><!-- .error-404 -->
-
-	</main><!-- #main -->
+		
+	</div>
+</main><!-- #main -->
 
 <?php
 get_footer();
+
+?>
+
