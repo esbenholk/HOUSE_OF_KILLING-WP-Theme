@@ -5,6 +5,7 @@ import { ShaderPass } from '/wp-content/themes/house_of_killing/three/examples/j
 import { UnrealBloomPass } from '/wp-content/themes/house_of_killing/three/examples/jsm/postprocessing/UnrealBloomPass.js';
 import {FilmPass} from 'https://threejsfundamentals.org/threejs/resources/threejs/r122/examples/jsm/postprocessing/FilmPass.js';
 import { GlitchPass } from 'https://threejsfundamentals.org/threejs/resources/threejs/r122/examples/jsm/postprocessing/GlitchPass.js'
+import { OrbitControls } from '/wp-content/themes/house_of_killing/three/examples/jsm/controls/OrbitControls.js';
 
 ///html elemets
 let canvas = document.getElementById("canvas");
@@ -35,9 +36,18 @@ let clock = new THREE.Clock();
 var scene = new THREE.Scene();
 var group = new THREE.Group();
 var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-camera.position.set(0,0,300);
+camera.position.set(0,0,30);
 camera.lookAt(scene.position);
 scene.add(camera);
+
+var controls = new OrbitControls(camera, document.body);
+controls.enableDamping = true; // an animation loop is required when either damping or auto-rotation are enabled
+controls.dampingFactor = 0.05;
+controls.screenSpacePanning = true;
+
+controls.enableZoom = false;
+controls.minPolarAngle = 0.3
+controls.maxPolarAngle = Math.PI
 
 var renderer = new THREE.WebGLRenderer({ });
 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -55,8 +65,8 @@ const bloomLayer = new THREE.Layers();
 bloomLayer.set( BLOOM_SCENE );
 
 const bloom_params = {
-    exposure: 1,
-    bloomStrength: 3,
+    exposure: 0.1,
+    bloomStrength: 1,
     bloomThreshold: 0,
     bloomRadius: 2
 };
@@ -142,6 +152,8 @@ function restoreMaterial( obj ) {
 
 function play() {
 
+ 
+
     context = new AudioContext();
     src = context.createMediaElementSource(skyVideo);
     analyser = context.createAnalyser();
@@ -153,37 +165,44 @@ function play() {
 
     //here comes the webgl
 
-    // scene.background = new THREE.Color("0xffffff")
-    scene.fog = new THREE.Fog( 0x000f5b, 300, 1000 );
+    scene.fog = new THREE.Fog( 0x8efffb, 800, 3000 );
 
 
-    var planeGeometry = new THREE.PlaneGeometry(800, 400, 20, 20);
+    var planeGeometry = new THREE.PlaneGeometry(1600, 1600, 20, 20);
     
-    var skyplaneMaterial = new THREE.MeshPhongMaterial({
-            color:     0xFFFFFF, 
-            specular:  0x050505,
-            shininess: 100,
-            map: new THREE.VideoTexture(skyVideo),
-            side: THREE.DoubleSide
-        }) 
+  
     var groundplaneMaterial = new THREE.MeshPhongMaterial({
             color:     0xFFFFFF, 
             specular:  0x050505,
-            shininess: 100,
+            shininess: 1000,
             map: new THREE.VideoTexture(earthVideo),
             side: THREE.DoubleSide
         })
 
+    var skyshape = new THREE.SphereGeometry(900,32,32);
+    var skyMaterial = new THREE.MeshPhongMaterial({
+            color:     0xFFFFFF, 
+            specular:  0xFFFFFF,
+            shininess: 100,
+            map: new THREE.VideoTexture(skyVideo),
+            side: THREE.DoubleSide
+        })
+    let sky = new THREE.Mesh(skyshape, skyMaterial)
+    scene.add(sky);
+
     
-    plane = new THREE.Mesh(planeGeometry, skyplaneMaterial);
-    plane.rotation.x = -0.545 * Math.PI;
-    plane.position.set(0, 30, 0);
-    group.add(plane);
-    
+
     plane2 = new THREE.Mesh(planeGeometry, groundplaneMaterial);
     plane2.rotation.x = -0.445 * Math.PI;
-    plane2.position.set(0, -30, 0);
+    plane2.position.set(0, -30,0);
     group.add(plane2);
+
+  
+    // texture.minFilter = THREE.LinearFilter;
+    // texture.magFilter = THREE.LinearFilter;
+    // texture.format = THREE.RGBFormat;
+ 
+  
 
 
 
@@ -276,6 +295,9 @@ function play() {
 
 function render() {
 
+    controls.update();
+
+
     analyser.getByteFrequencyData(dataArray);
 
     var lowerHalfArray = dataArray.slice(0, (dataArray.length/2) - 1);
@@ -292,7 +314,7 @@ function render() {
     var upperMaxFr = upperMax / upperHalfArray.length;
     var upperAvgFr = upperAvg / upperHalfArray.length;
 
-    makeRoughGround(plane, modulate(upperAvgFr, 0, 1, 0.5, 4));
+   
     makeRoughGround(plane2, modulate(lowerMaxFr, 0, 1, 0.5, 4));
     
 
@@ -362,6 +384,7 @@ function makeRoughGround(mesh, distortionFr) {
     mesh.geometry.computeVertexNormals();
     mesh.geometry.computeFaceNormals();
 }
+
 
 
 

@@ -596,28 +596,33 @@ main site
 	width: 170px;
 }
 #archive{
-	width: 170px;
+	width: 200px;
 	height: auto;
 	overflow-y: scroll;
-	pointer-events: none;
+	/* pointer-events: none; */
 }
 
 
 #archive li,
 #archive .teaser #post-title{
-	max-width: 100%;
+	width: 70%;
 	border: 2px var(--neongreen) solid;
 	pointer-events: auto;
 	/* margin-bottom: 15px; */
 	width: auto;
 	border-radius: 0 0 15px 0;
-	font-size: 15px;
+	font-size: 12px;
 	text-transform: none;
 	font-family: 'sinistrest_caroline', cursive;
 	padding: 5px;
 	color: white;
 	margin:0;
 	margin-bottom: 5px;
+	background-color: rgba(0,0,0,0);
+}
+#archive li:hover,
+#archive .teaser #post-title:hover{
+	background-color: var(--neongreen)
 }
 
 

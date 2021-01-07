@@ -29,6 +29,8 @@ get_header();
 			<div id="loading-status"></id>
 
 			<div id="canvas" class="online-exhibition-canvas"></div>
+			<p id="canvas-title"></p>
+
 		
 			<div class="fixed media-relative">
 				<div id="archive">

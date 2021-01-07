@@ -114,7 +114,7 @@ function create_posttype() {
                 'singular_name' => __( 'Collab' )
             ),
             'public' => true,
-            'has_archive' => true,
+            'has_archive' => false,
             'rewrite' => array('slug' => 'feat'),
 			'show_in_rest' => true,
 			'supports' => array( 'title', 'editor', 'author', 'thumbnail', 'excerpt')
@@ -205,6 +205,17 @@ function house_of_killing_scripts() {
 add_action( 'wp_enqueue_scripts', 'house_of_killing_scripts' );
 
 
+
+
+function custom_type_archive_display($query) {
+    if (is_post_type_archive('project')) {
+         $query->set('posts_per_page',20);
+         $query->set('orderby', 'date' );
+         $query->set('order', 'DESC' );
+        return;
+    }     
+}
+add_action('pre_get_posts', 'custom_type_archive_display');
 
 /**
  * Implement the Custom Header feature.

@@ -8,6 +8,8 @@ import {FilmPass} from 'https://threejsfundamentals.org/threejs/resources/threej
 
 /// HTML elements
 let canvas = document.getElementById("canvas");
+let title = document.getElementById("canvas-title")
+
 
 let context = document.getElementById('archive')
 let teasers= context.getElementsByClassName('teaser')
@@ -15,6 +17,7 @@ let buttons = []
 
 for (let index = 0; index < teasers.length; index++) {
     const element = teasers[index].getElementsByTagName("h2")[0];
+    console.log(element);
     if(element != undefined){
         buttons.push(element);
     }
@@ -387,34 +390,34 @@ function onClick() {
   
 }
 
-function onMouseMove( event ) {
+// function onMouseMove( event ) {
 
-    mouse.x = ( event.clientX / renderer.domElement.clientWidth ) * 2 - 1;
-    mouse.y = - ( event.clientY / renderer.domElement.clientHeight ) * 2 + 1;
-    raycaster.setFromCamera( mouse, camera );
+//     mouse.x = ( event.clientX / renderer.domElement.clientWidth ) * 2 - 1;
+//     mouse.y = - ( event.clientY / renderer.domElement.clientHeight ) * 2 + 1;
+//     raycaster.setFromCamera( mouse, camera );
 
-    // See if the ray from the camera into the world hits one of our meshes
-    var intersects = raycaster.intersectObjects(scene.children, true);
+//     // See if the ray from the camera into the world hits one of our meshes
+//     var intersects = raycaster.intersectObjects(scene.children, true);
     
-    // Toggle rotation bool for meshes that we clicked
-    if ( intersects.length > 0 ) {
+//     // Toggle rotation bool for meshes that we clicked
+//     if ( intersects.length > 0 ) {
 
-        if(intersects[0].object.userData.link){
-            for (let index = 0; index < buttons.length; index++) {
+//         if(intersects[0].object.userData.link){
+//             for (let index = 0; index < buttons.length; index++) {
                
-                    if(intersects[0].object.userData.title.innerHTML === buttons[index].innerHTML){
-                        buttons[index].style.background = "#2CFC0A";
-                    } else {
-                        buttons[index].style.background = "transparent";
-                    }
+//                     if(intersects[0].object.userData.title.innerHTML === buttons[index].innerHTML){
+//                         buttons[index].style.background = "#2CFC0A";
+//                     } else {
+//                         buttons[index].style.background = "transparent";
+//                     }
                 
                 
-            }
-        }
+//             }
+//         }
         
-    }
+//     }
 
-}
+// }
 function onWindowResize() {
 
     camera.aspect = window.innerWidth / window.innerHeight;
@@ -432,3 +435,66 @@ function onDocumentMouseMove( event ) {
     mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
 
 }
+
+function onMouseMove( event ) {
+
+    
+
+    mouse.x = ( event.clientX / renderer.domElement.clientWidth ) * 2 - 1;
+    mouse.y = - ( event.clientY / renderer.domElement.clientHeight ) * 2 + 1;
+    raycaster.setFromCamera( mouse, camera );
+
+
+    // See if the ray from the camera into the world hits one of our meshes
+    var intersects = raycaster.intersectObjects(scene.children, true);
+    
+    // Toggle rotation bool for meshes that we clicked
+    if ( intersects.length > 0 ) {
+
+        console.log(intersects[0].object);
+
+        if(intersects[0].object.userData.title.innerHTML){
+          
+          title.innerHTML = intersects[0].object.userData.title.innerHTML
+            
+          
+                        for (let index = 0; index < buttons.length; index++) {
+               
+                                if(intersects[0].object.userData.title.innerHTML === buttons[index].innerHTML){
+                                    buttons[index].style.width = "90%"
+                                } 
+                                else {
+                                    buttons[index].style.width = "70%"
+                                }
+                            
+                        }
+
+
+
+
+        } 
+        
+    }
+
+}
+
+
+window.onload = function(){
+    var x, y;
+// On mousemove use event.clientX and event.clientY to set the location of the div to the location of the cursor:
+    window.addEventListener('mousemove', function(event){
+        x = event.clientX;
+        y = event.clientY;                    
+        if ( typeof x !== 'undefined' ){
+            title.style.left = x + "px";
+            title.style.top = y + "px";
+        }
+    }, false);
+}
+
+canvas.addEventListener("mouseover", function(){
+    title.style.display = "block"
+})
+canvas.addEventListener("mouseleave", function(){
+    title.style.display = "none"
+})
