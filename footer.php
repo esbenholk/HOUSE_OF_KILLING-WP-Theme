@@ -22,11 +22,11 @@
 
 
 
-<div id="crystal" >	
+<div id="crystal" class="neon-box">	
 	<div class="flex-row right absolute">
-		<div class="dot"></div>
-		<div class="dot"></div>
-		<div class="dot"></div>
+		<div class="dot neon-box"></div>
+		<div class="dot neon-box"></div>
+		<div class="dot neon-box"></div>
 	</div>
 
 	<img  src="https://stayvirtual.s3.amazonaws.com/crystals/greencrystal">
@@ -50,10 +50,10 @@
 					<div id="buttoncontainer">
 						<img id="image2"class="rect vhs-flicker" src="">
 						<div class="flex-row right absolute">
-							<div class="dot"></div>
-							<div class="dot"></div>
+							<div class="dot neon-box"></div>
+							<div class="dot neon-box"></div>
 						</div>
-						<p id="remix" class="grow">remix</p>
+						<p id="remix" class="grow neon-box">remix</p>
 					</div>
 			</div>
 
@@ -61,7 +61,7 @@
 		</div>
 		
 	
-	<div id="ticker2" class="vhs-flicker">
+	<div id="ticker2" class="vhs-flicker neon-box">
         <div class="headlines">
 			<a href="/" class="ticker-object"> <?php echo $my_excerpt ?> </a>
 			<a href="/" class="ticker-object"> <?php echo $my_excerpt ?> </a>

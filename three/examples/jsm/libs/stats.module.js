@@ -3,7 +3,8 @@ var Stats = function () {
 	var mode = 0;
 
 	var container = document.createElement( 'div' );
-	container.style.cssText = 'position:fixed;top:0;left:0;cursor:pointer;opacity:0.9;z-index:10000';
+	container.classList.add("stats")
+	container.classList.add("neon-box")
 	container.addEventListener( 'click', function ( event ) {
 
 		event.preventDefault();
@@ -36,7 +37,7 @@ var Stats = function () {
 
 	var beginTime = ( performance || Date ).now(), prevTime = beginTime, frames = 0;
 
-	var fpsPanel = addPanel( new Stats.Panel( 'FPS', '#0ff', '#002' ) );
+	var fpsPanel = addPanel( new Stats.Panel( 'FPS', '#000', '#002' ) );
 	var msPanel = addPanel( new Stats.Panel( 'MS', '#0f0', '#020' ) );
 
 	if ( self.performance && self.performance.memory ) {

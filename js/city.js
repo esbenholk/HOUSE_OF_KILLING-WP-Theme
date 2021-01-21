@@ -5,7 +5,6 @@ import { Sky } from '/wp-content/themes/house_of_killing/three/examples/jsm/obje
 import { GLTFLoader } from '/wp-content/themes/house_of_killing/three/examples/jsm/loaders/GLTFLoader.js';
 import { FirstPersonControls } from '/wp-content/themes/house_of_killing/three/examples/jsm/controls/FirstPersonControls.js';
 
-console.log("start");
 
 let canvas = document.getElementById("canvas");
 
@@ -15,6 +14,9 @@ canvas.addEventListener('mousedown', function(){
 canvas.addEventListener('mouseup', function(){
   canvas.classList.remove("hide-cursor")
 })
+
+
+
 
 let c, ctx, texture;
 
@@ -32,14 +34,14 @@ function drawCanvas(){
       var wipeBlock2 = "▉"; //Block to clear
       //chinese characters - taken from the unicode charset
       var matrix =
-        "WWWXXXXXXWWWCCCC///////((())))====111"; //子月刀馬日
+        "hej, click me, sorry, love, LOL, bye, wait, 404, missing, file, brb, super, hard, sex, fuck, me, me, baby, lost, you, are, ?, find me, ?, don't go, come back, appear, xx, x, XYZ, WWW, HOUSE, KILLING, OF, hello, world, ditto, bruise, choke, ash, like me, click me, bury me, wife me, be me, control me, command, delete, data, DATA"; //子月刀馬日
       //converting the string into an array of single characters
-      matrix = matrix.split("");
+      matrix = matrix.split(",");
   
-      var font_size = 50;
+      var font_size = 20;
       ctx.font = font_size + "px monospace";
   
-      var columns = c.width / font_size; //number of columns for the rain
+      var columns = c.width / font_size*10; //number of columns for the rain
       //one per column
       var drops = []; //Array of drops
       var speed = []; //Frames till next move
@@ -127,17 +129,18 @@ function init() {
   scene.background = new THREE.Color( 0x0026ff)
 	// setup camera
   camera = new THREE.PerspectiveCamera( 40, window.innerWidth / window.innerHeight, 1, 3000 );
-  camera.position.y = 100;
-  camera.lookAt( scene.position );
+  camera.position.y = 50;
+  // camera.lookAt( scene.position );
 
 	// setup controls
 	controls = new FirstPersonControls( camera, document.body );
 	controls.movementSpeed = 20;
 	controls.lookSpeed = 0.05;
-  controls.verticalMax = -7;
+  controls.verticalMax = 0;
   controls.verticalMin = 0.9;
   controls.heightMin = 10;
   controls.heightSpeed = true;
+  controls.enabled = false;
 
 
 
@@ -205,7 +208,7 @@ function init() {
 	var mesh = new THREE.Mesh( city, new THREE.MeshPhongMaterial({
       color:     0x996633, 
       specular:  0x050505,
-      shininess: 100,
+      shininess: 10000,
       map: texture,
       vertexColors: THREE.VertexColors, 
       side: THREE.DoubleSide
@@ -216,35 +219,7 @@ function init() {
 
   const sphere = new THREE.SphereBufferGeometry( 0.5, 16, 8 );
 
-  light1 = new THREE.PointLight( 0xe500ff, 2, 1000 );
-  light1.add( new THREE.Mesh( sphere, new THREE.MeshBasicMaterial( { color: 0xff0040 } ) ) );
-  scene.add( light1 );
-
-  light2 = new THREE.PointLight( 0x0040ff, 2, 200 );
-  light2.add( new THREE.Mesh( sphere, new THREE.MeshBasicMaterial( { color: 0x0040ff } ) ) );
-  scene.add( light2 );
-
-  light3 = new THREE.PointLight( 0x2CFC0A, 2, 300 );
-  light3.add( new THREE.Mesh( sphere, new THREE.MeshBasicMaterial( { color: 0x2CFC0A } ) ) );
-  scene.add( light3 );
-
-  light4 = new THREE.PointLight( 0xffaa00, 2, 500 );
-  light4.add( new THREE.Mesh( sphere, new THREE.MeshBasicMaterial( { color: 0xffaa00 } ) ) );
-  scene.add( light4 );
-
-  light5 = new THREE.PointLight( 0xff0040, 2, 100 );
-  light5.add( new THREE.Mesh( sphere, new THREE.MeshBasicMaterial( { color: 0xff0040 } ) ) );
-  scene.add( light5 );
-
-  light6 = new THREE.PointLight( 0x2CFC0A, 2, 700 );
-  light6.add( new THREE.Mesh( sphere, new THREE.MeshBasicMaterial( { color: 0x2CFC0A } ) ) );
-  scene.add( light6 );
-
-  light7 = new THREE.PointLight( 0x80ff80, 2, 200 );
-  light7.add( new THREE.Mesh( sphere, new THREE.MeshBasicMaterial( { color: 0x80ff80 } ) ) );
-  scene.add( light7 );
-
-  light8 = new THREE.PointLight( 0x2CFC0A, 2, 200 );
+  light8 = new THREE.PointLight( 0x2CFC0A, 3, 0 );
   light8.add( new THREE.Mesh( sphere, new THREE.MeshBasicMaterial( { color: 0x2CFC0A} ) ) );
   scene.add( light8 );
 
@@ -315,33 +290,11 @@ function render(){
   texture.needsUpdate = true;
   renderer.render( scene, camera );
 
-  const time = Date.now() * 0.025;
-  const d = 10;
-  
-          light1.position.x = Math.sin( time * 20 ) * d;
-          light1.position.z = Math.cos( time * 30 ) * d;
-  
-          light2.position.x = Math.cos( time *10) * d;
-          light2.position.z = Math.sin( time * 0 ) * d;
-  
-          light3.position.x = Math.sin( time * 0.1 ) * d;
-          light3.position.z = Math.sin( time * 0.1 ) * d;
-  
-          light4.position.x = Math.sin( time * 0.003 ) * d;
-          light4.position.z = Math.sin( time * 0.005 ) * d;
-  
-          light5.position.x = Math.cos( time * 0.003 ) * d;
-          light5.position.z = Math.sin( time * 0.05 ) * d;
-  
-          light6.position.x = Math.cos( time * 0.1 ) * d;
-          light6.position.z = Math.cos( time * 0.5 ) * d;
-          
-          light7.position.x = Math.cos( time * 0.7 ) * d;
-          light7.position.z = Math.cos( time * 0.5 ) * d;
 
-          light8.position.x = camera.position.x;
-          light8.position.z = camera.position.z;
-          light8.position.y = camera.position.y;
+
+  light8.position.x = camera.position.x;
+  light8.position.z = camera.position.z;
+  light8.position.y = camera.position.y;
 
 }
 
@@ -353,3 +306,7 @@ function onWindowResize() {
   renderer.setSize( window.innerWidth, window.innerHeight );
 
 }
+
+canvas.addEventListener("click", function(){
+  controls.enabled = true;
+})

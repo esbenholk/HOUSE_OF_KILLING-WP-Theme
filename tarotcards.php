@@ -41,17 +41,23 @@ get_header(); ?>
 	</div>
 	
 	<div id="canvas" class="online-exhibition-canvas">
+			<div id="canvas-details">
+            <div class="instruction neon-box">	
+                        <div class="absolute left flex-row">
+                            <div class="dot neon-box"></div>
+                            <div class="dot neon-box"></div>
+                        </div>
+                        <p>
+                            <p id="project-title">
+                                <?php echo $my_excerpt ?>
+							</p>
+							<button id="start">start</button>
 
-        <div class="instruction">	
-					<div class="absolute left flex-row">
-						<div class="dot"></div>
-						<div class="dot"></div>
-					</div>
-					<a> <?php echo $my_excerpt ?> </a>
-					<button id="start">start</button>
-					
-				
-			</div>	
+
+                        </p>
+                    
+            </div>
+        </div>	
 
 
     </div>

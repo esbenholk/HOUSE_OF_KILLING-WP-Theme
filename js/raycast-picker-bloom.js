@@ -54,7 +54,6 @@ textureLoader.crossOrigin = "Anonymous";
 /// scene variables
 let camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 1, 10000 );
 let scene = new THREE.Scene();
-// scene.background = new THREE.Color("0x0019ff")
 let clock = new THREE.Clock();
 let raycaster = new THREE.Raycaster();
 let renderer = new THREE.WebGLRenderer();
@@ -228,7 +227,7 @@ function init() {
     sphere7.layers.enable( BLOOM_SCENE );
     sphere8.layers.enable( BLOOM_SCENE );
 
-    
+    scene.add( new THREE.AmbientLight( 0x0019ff,  1 ) );
     light1 = new THREE.PointLight( 0xff0040, 2, 80  );
     light1.add( sphere1 );
     scene.add( light1 );
@@ -261,21 +260,21 @@ function init() {
     light8.add( sphere8 );
     scene.add( light8 );
 
-    flashlight = new THREE.SpotLight( 0xffffff, 0.5 );
-    flashlight.angle = Math.PI / 4;
-    flashlight.penumbra = 0.1;
-    flashlight.decay = 2;
+    // flashlight = new THREE.SpotLight( 0xffffff, 0.5 );
+    // flashlight.angle = Math.PI / 4;
+    // flashlight.penumbra = 0.1;
+    // flashlight.decay = 2;
 
-    flashlight.castShadow = true;
-    flashlight.shadow.mapSize.width = 200;
-    flashlight.shadow.mapSize.height = 200;
-    flashlight.shadow.camera.near = 10;
-    flashlight.shadow.camera.far = 200;
-    flashlight.shadow.focus = 1;
-    scene.add( flashlight );
-    camera.add( flashlight.target );
-    flashlight.target.position.set( 0, 0, -1 );
-    flashlight.position.copy( camera.position );
+    // flashlight.castShadow = true;
+    // flashlight.shadow.mapSize.width = 200;
+    // flashlight.shadow.mapSize.height = 200;
+    // flashlight.shadow.camera.near = 10;
+    // flashlight.shadow.camera.far = 200;
+    // flashlight.shadow.focus = 1;
+    // scene.add( flashlight );
+    // camera.add( flashlight.target );
+    // flashlight.target.position.set( 0, 0, -1 );
+    // flashlight.position.copy( camera.position );
 
 
 
@@ -312,7 +311,7 @@ function render() {
     camera.position.z = radius * Math.cos( THREE.MathUtils.degToRad( theta ) );
     camera.lookAt( scene.position );
 
-    flashlight.position.copy( camera.position );
+    // flashlight.position.copy( camera.position );
     camera.updateMatrixWorld();
 
     // find intersections
@@ -390,34 +389,7 @@ function onClick() {
   
 }
 
-// function onMouseMove( event ) {
 
-//     mouse.x = ( event.clientX / renderer.domElement.clientWidth ) * 2 - 1;
-//     mouse.y = - ( event.clientY / renderer.domElement.clientHeight ) * 2 + 1;
-//     raycaster.setFromCamera( mouse, camera );
-
-//     // See if the ray from the camera into the world hits one of our meshes
-//     var intersects = raycaster.intersectObjects(scene.children, true);
-    
-//     // Toggle rotation bool for meshes that we clicked
-//     if ( intersects.length > 0 ) {
-
-//         if(intersects[0].object.userData.link){
-//             for (let index = 0; index < buttons.length; index++) {
-               
-//                     if(intersects[0].object.userData.title.innerHTML === buttons[index].innerHTML){
-//                         buttons[index].style.background = "#2CFC0A";
-//                     } else {
-//                         buttons[index].style.background = "transparent";
-//                     }
-                
-                
-//             }
-//         }
-        
-//     }
-
-// }
 function onWindowResize() {
 
     camera.aspect = window.innerWidth / window.innerHeight;
@@ -460,12 +432,12 @@ function onMouseMove( event ) {
           
                         for (let index = 0; index < buttons.length; index++) {
                
-                                if(intersects[0].object.userData.title.innerHTML === buttons[index].innerHTML){
-                                    buttons[index].style.width = "90%"
-                                } 
-                                else {
-                                    buttons[index].style.width = "70%"
-                                }
+                                // if(intersects[0].object.userData.title.innerHTML === buttons[index].innerHTML){
+                                //     buttons[index].style.width = "90%"
+                                // } 
+                                // else {
+                                //     buttons[index].style.width = "70%"
+                                // }
                             
                         }
 

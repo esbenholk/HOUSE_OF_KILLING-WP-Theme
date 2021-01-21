@@ -1,4 +1,4 @@
-<?php /* Template Name: premade model */ ?>
+<?php /* Template Name: world example */ ?>
 
 
 <?php
@@ -15,21 +15,26 @@
  *@package HOUSE_OF_KILLING
  */
 
-get_header(); ?>
-
-<?php
-    $my_excerpt = get_the_excerpt();
-     if($my_excerpt !='') {
-        $my_excerpt = $my_excerpt;
-     } else{
-        $my_excerpt = "";
-     }
 ?>
 
+<style>
+    canvas{
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+    }
+
+</style>
 
 
-<?php $src = get_stylesheet_directory_uri().'/js/inversion-test.js';?>
+
+
+<?php $src = get_stylesheet_directory_uri().'/js/lightbloom-controls.js';?>
+
 <script type="module" src="<?php echo esc_url($src); ?>"></script>
+
 
 <div id="threeDfrontpage" class="col-md-12">
     <div  id='loading-screen' class="loading-container">
@@ -40,48 +45,15 @@ get_header(); ?>
                 </div>
             </div>
     </div>
-
-    <div id="canvas-container">
-		<canvas id="HTMLcanvas"></canvas>
-	</div>
 	
 	<div id="canvas" class="online-exhibition-canvas">
-        <canvas id="c" style="width:100%;height:100%;"></canvas>
-        <p id="canvas-title">avatar island</p>
-
-        <div id="canvas-details">
-            <div class="instruction neon-box">	
-                        <div class="absolute left flex-row">
-                            <div class="dot neon-box"></div>
-                            <div class="dot neon-box"></div>
-                        </div>
-                        <p>
-                            <p id="project-title">
-                                <?php echo $my_excerpt ?>
-                            </p>
-
-                        </p>
-                    
-            </div>
-        </div>	
-        
-
+      
+    
 
 
     </div>
 			
-	<?php while ( have_posts() ) : the_post(); ?>
-
-		<div class="site-content">
-           
-           
-		
-            <p><?php the_content() ?></p>
-          
-
-		</div>
-
-	<?php endwhile; // End of the loop. ?>
+	
 
 
 	<script type="x-shader/x-vertex" id="vertexshader">
@@ -125,7 +97,6 @@ get_header(); ?>
 
 
 	
-<?php get_footer(); ?>
 
 
 	

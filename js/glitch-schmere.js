@@ -6,7 +6,6 @@ import { GLTFLoader } from '/wp-content/themes/house_of_killing/three/examples/j
 import { EffectComposer } from '/wp-content/themes/house_of_killing/three/examples/jsm/postprocessing/EffectComposer.js';
 import { RenderPass } from '/wp-content/themes/house_of_killing/three/examples/jsm/postprocessing/RenderPass.js';
 import { ShaderPass } from '/wp-content/themes/house_of_killing/three/examples/jsm/postprocessing/ShaderPass.js';
-import { UnrealBloomPass } from '/wp-content/themes/house_of_killing/three/examples/jsm/postprocessing/UnrealBloomPass.js';
 import { FilmPass } from '/wp-content/themes/house_of_killing/three/examples/jsm/postprocessing/FilmPass.js';
 import Stats from '/wp-content/themes/house_of_killing_2.0/three/examples/jsm/libs/stats.module.js';
 
@@ -76,104 +75,6 @@ let objects =[];
 
 ///set rotate to false for still scene
 let rotate = true;
-
-
-/// post processing variables
-const ENTIRE_SCENE = 0, BLOOM_SCENE = 1;
-
-const bloomLayer = new THREE.Layers();
-bloomLayer.set( BLOOM_SCENE );
-
-const bloom_params = {
-    exposure: 1,
-    bloomStrength: 5,
-    bloomThreshold: 0,
-    bloomRadius: 0,
-    scene: "Scene with Glow"
-};
-const renderScene = new RenderPass( scene, camera );
-
-const bloomPass = new UnrealBloomPass( new THREE.Vector2( window.innerWidth, window.innerHeight ), 1.5, 0.4, 0.85 );
-bloomPass.threshold = bloom_params.bloomThreshold;
-bloomPass.strength = bloom_params.bloomStrength;
-bloomPass.radius = bloom_params.bloomRadius;
-
-const bloomComposer = new EffectComposer( renderer );
-bloomComposer.renderToScreen = false;
-bloomComposer.addPass( renderScene );
-bloomComposer.addPass( bloomPass );
-
-const finalPass = new ShaderPass(
-    new THREE.ShaderMaterial( {
-        uniforms: {
-            baseTexture: { value: null },
-            bloomTexture: { value: bloomComposer.renderTarget2.texture }
-        },
-        vertexShader: document.getElementById( 'vertexshader' ).textContent,
-        fragmentShader: document.getElementById( 'fragmentshader' ).textContent,
-        defines: {}
-    } ), "baseTexture"
-);
-
-finalPass.needsSwap = true;
-
-
-const finalComposer = new EffectComposer( renderer );
-
-finalComposer.addPass( renderScene );
-const filmPass = new FilmPass(
-    0.35,   // noise intensity
-    0.025,  // scanline intensity
-    1,    // scanline count
-    false,  // grayscale
-);
-filmPass.renderToScreen = true;
-finalComposer.addPass( filmPass);
-
-finalComposer.addPass( finalPass );
-
-
-
-
-const darkMaterial = new THREE.MeshBasicMaterial( { color: "black" } );
-const materials = {};
-
-
-function disposeMaterial( obj ) {
-
-    if ( obj.material ) {
-
-        obj.material.dispose();
-
-    }
-
-}
-
-function darkenNonBloomed( obj ) {
-
-    if ( obj.isMesh && bloomLayer.test( obj.layers ) === false ) {
-
-        materials[ obj.uuid ] = obj.material;
-        obj.material = darkMaterial;
-
-    }
-
-}
-
-function restoreMaterial( obj ) {
-
-    if ( materials[ obj.uuid ] ) {
-
-        obj.material = materials[ obj.uuid ];
-        delete materials[ obj.uuid ];
-
-    }
-
-}
-
-
-
-
 
 ///wind simulation variables
 var DAMPING = 0.03;
@@ -538,8 +439,7 @@ function createFlag(url, x, z, rotationY, xvalue, yvalue, zvalue){
 setupScene();
 
 function setupScene() {
-    scene.traverse( disposeMaterial );
-	scene.children.length = 0;
+	// scene.children.length = 0;
 
 
     //lights
@@ -548,22 +448,22 @@ function setupScene() {
     const sphere1geometry = new THREE.IcosahedronBufferGeometry( 3, 15 );
     const sphere1material =  new THREE.MeshBasicMaterial( { color: 0xff0040 } )
     let sphere1 = new THREE.Mesh( sphere1geometry, sphere1material );
-    sphere1.layers.enable( BLOOM_SCENE );
+    // sphere1.layers.enable( BLOOM_SCENE );
 
     const sphere2geometry = new THREE.IcosahedronBufferGeometry( 2, 15 );
     const sphere2material =  new THREE.MeshBasicMaterial( { color: 0x2aff00 } )
     let sphere2 = new THREE.Mesh( sphere2geometry, sphere2material );
-    sphere2.layers.enable( BLOOM_SCENE );
+    // sphere2.layers.enable( BLOOM_SCENE );
 
     const sphere3geometry = new THREE.IcosahedronBufferGeometry( 1.5, 15 );
     const sphere3material =  new THREE.MeshBasicMaterial( { color: 0xff0040 } )
     let sphere3 = new THREE.Mesh( sphere3geometry, sphere3material );
-    sphere3.layers.enable( BLOOM_SCENE );
+    // sphere3.layers.enable( BLOOM_SCENE );
 
     const sphere4geometry = new THREE.IcosahedronBufferGeometry( 1, 15 );
     const sphere4material =  new THREE.MeshBasicMaterial( { color: 0x002aff } )
     let sphere4 = new THREE.Mesh( sphere4geometry, sphere4material );
-    sphere4.layers.enable( BLOOM_SCENE );
+    // sphere4.layers.enable( BLOOM_SCENE );
 
     
     
@@ -771,14 +671,15 @@ function render() {
 
 
     // render scene with bloom
-    scene.traverse( darkenNonBloomed );
-    bloomComposer.render();
-    scene.traverse( restoreMaterial );
+    // scene.traverse( darkenNonBloomed );
+    // bloomComposer.render();
+    // scene.traverse( restoreMaterial );
 
 
 
     // render the entire scene, then render bloom scene on top
-    finalComposer.render();
+    // finalComposer.render();
+    renderer.render( scene, camera );
 
 
 }
@@ -805,7 +706,7 @@ function addObjects(url,x,y,z, scale, rotate, item){
     }
     if(item===true){
         objects.push(model)
-        model.layers.enable( BLOOM_SCENE );
+
     }
 
     scene.add( model );

@@ -41,7 +41,7 @@
 ?>
 <header id="header" class="site-header ">
             <div class="flex-row maxheight30">
-                        <button class="nav-btn"" id="nav-btn" type="button" class="menu-toggle" data-toggle="collapse" aria-controls="primary-menu" aria-expanded="false">
+                        <button class="nav-btn neon-box" id="nav-btn" type="button" class="menu-toggle" data-toggle="collapse" aria-controls="primary-menu" aria-expanded="false">
                             <div class="eyes">   
                                 <div class="eye">
                                             <div class="ball"></div>
@@ -55,7 +55,7 @@
                             </div>
                         </button>  
    
-                        <div id="ticker1" class="vhs-flicker">
+                        <div id="ticker1" class="vhs-flicker neon-box">
                             <div class="headlines">
                                 
                                 <a href="/" class="ticker-object"> <?php echo $my_excerpt ?> </a>
@@ -80,10 +80,10 @@
 
 
 			<div class="column" >
-			<div id="licking" class="flex-row">
+			<div id="licking" class="flex-row neon-box">
 				<div class="flex-row right absolute">
-					<div class="dot"></div>
-					<div class="dot"></div>
+					<div class="dot neon-box"></div>
+					<div class="dot neon-box"></div>
 				</div>
 				
 				<img id="sexy-object"  src="/wp-content/themes/house_of_killing/icons/missing-file-icon.png">

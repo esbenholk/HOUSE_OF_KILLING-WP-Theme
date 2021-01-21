@@ -8,7 +8,9 @@ import { RenderPass } from '/wp-content/themes/house_of_killing/three/examples/j
 import { ShaderPass } from '/wp-content/themes/house_of_killing/three/examples/jsm/postprocessing/ShaderPass.js';
 import { UnrealBloomPass } from '/wp-content/themes/house_of_killing/three/examples/jsm/postprocessing/UnrealBloomPass.js';
 import { FilmPass } from '/wp-content/themes/house_of_killing/three/examples/jsm/postprocessing/FilmPass.js';
-import Stats from '/wp-content/themes/house_of_killing_2.0/three/examples/jsm/libs/stats.module.js';
+
+import { OrbitControls } from '/wp-content/themes/house_of_killing/three/examples/jsm/controls/OrbitControls.js';
+
 
 /// canvas element
 let canvas = document.getElementById("canvas");
@@ -49,18 +51,26 @@ canvas.appendChild( renderer.domElement );
 
 ////scene titles
 let title = document.getElementById("canvas-title")
-let canvasDetails = document.getElementById("canvas-details")
 
 
 /// scene variables
 let raycaster = new THREE.Raycaster();
 let mouse = new THREE.Vector2();
 
-var stats = new Stats();
+
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera( 55, window.innerWidth / window.innerHeight, 1, 20000 );
 camera.position.set( 10, 100, 100 );
 camera.lookAt( 0, 0, 0 );
+
+let controls = new OrbitControls(camera, document.body);
+controls.enableDamping = true; // an animation loop is required when either damping or auto-rotation are enabled
+controls.dampingFactor = 0.05;
+
+controls.screenSpacePanning = false;
+
+// controls.minDistance = 100;
+// controls.maxDistance = 500;
 
 let clock = new THREE.Clock();
 let sun = new THREE.Vector3();
@@ -131,7 +141,6 @@ filmPass.renderToScreen = true;
 finalComposer.addPass( filmPass);
 
 finalComposer.addPass( finalPass );
-
 
 
 
@@ -531,8 +540,13 @@ function createFlag(url, x, z, rotationY, xvalue, yvalue, zvalue){
     group.scale.set(0.06,0.06,0.06)
     
     scene.add(group)
-}
 
+    
+   
+   
+
+
+}
 
 
 setupScene();
@@ -601,8 +615,8 @@ function setupScene() {
            } ),
            alpha: 1.0,
            sunDirection: new THREE.Vector3(),
-           sunColor: 0xf7fc0a,
-           waterColor: 0xe2a1f2,
+           sunColor: 0x2CFC0A,
+           waterColor: 0x2CFC0A,
            distortionScale: 3.5       }
     );
 
@@ -622,14 +636,14 @@ function setupScene() {
 
     const skyUniforms = sky.material.uniforms;
 
-    skyUniforms[ 'turbidity' ].value = 20;
-    skyUniforms[ 'rayleigh' ].value = 20;
-    skyUniforms[ 'mieCoefficient' ].value = 0.05;
+    skyUniforms[ 'turbidity' ].value = 10;
+    skyUniforms[ 'rayleigh' ].value = 2;
+    skyUniforms[ 'mieCoefficient' ].value = 0.005;
     skyUniforms[ 'mieDirectionalG' ].value = 0.8;
 
     const parameters = {
        inclination: 0.49,
-       azimuth: 0.1
+       azimuth: 0.01
     };
 
 
@@ -668,19 +682,13 @@ function setupScene() {
     window.addEventListener( 'resize', onWindowResize, false );
     canvas.addEventListener( 'mousemove', onMouseMove, false );
 
-   
-    stats.showPanel( 1 );
-    canvasDetails.appendChild( stats.domElement );
-
     animate(0);
 
 }
 
 
 function animate(now) {
-    stats.begin();
-
- 
+    controls.update();
 
     for (let index = 0; index < cloths.length; index++) {
         const element = cloths[index];
@@ -691,9 +699,6 @@ function animate(now) {
     requestAnimationFrame( animate );
 
     render();
-
-    stats.end();
-
 }
 
 function render() {
@@ -701,20 +706,20 @@ function render() {
     
 
 
-    if(rotate===true){
-        theta += 0.1;
-        if(radius<100){
-            radius += 0.05;
-        }
+    // if(rotate===true){
+    //     theta += 0.1;
+    //     if(radius<100){
+    //         radius += 0.05;
+    //     }
     
-        camera.position.x = radius * Math.sin( THREE.MathUtils.degToRad( theta ) );
-        camera.position.z = radius * Math.cos( THREE.MathUtils.degToRad( theta ) );
-        camera.position.y = 3*Math.cos( THREE.MathUtils.degToRad( theta ) );
-        camera.lookAt( scene.position );
+    //     camera.position.x = radius * Math.sin( THREE.MathUtils.degToRad( theta ) );
+    //     camera.position.z = radius * Math.cos( THREE.MathUtils.degToRad( theta ) );
+    //     camera.position.y = 3*Math.cos( THREE.MathUtils.degToRad( theta ) );
+    //     camera.lookAt( scene.position );
 
-        camera.updateMatrixWorld();
+    //     camera.updateMatrixWorld();
 
-    }
+    // }
 
 
     for (let u = 0; u < clothGeometries.length; u++) {
@@ -774,8 +779,6 @@ function render() {
     scene.traverse( darkenNonBloomed );
     bloomComposer.render();
     scene.traverse( restoreMaterial );
-
-
 
     // render the entire scene, then render bloom scene on top
     finalComposer.render();

@@ -28,11 +28,11 @@ get_header();
 			</div>
 			<div id="loading-status"></id>
 
-			<div id="canvas" class="online-exhibition-canvas"></div>
+			<div id="canvas" class="online-exhibition-canvas neon-box"></div>
 			<p id="canvas-title"></p>
 
 		
-			<div class="fixed media-relative">
+			<div class="media-relative">
 				<div id="archive">
 					<?php if ( have_posts() ) : ?>
 						<?php
@@ -77,11 +77,11 @@ get_header();
 
 
 
-<div id="crystal" >	
+<div id="crystal" class="neon-box">	
 	<div class="flex-row right absolute">
-		<div class="dot"></div>
-		<div class="dot"></div>
-		<div class="dot"></div>
+		<div class="dot neon-box"></div>
+		<div class="dot neon-box"></div>
+		<div class="dot neon-box"></div>
 	</div>
 
 	<img  src="https://stayvirtual.s3.amazonaws.com/crystals/greencrystal">

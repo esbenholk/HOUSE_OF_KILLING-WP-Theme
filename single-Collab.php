@@ -30,12 +30,12 @@ get_header(); ?>
 
 		<div class="site-content">
            
-			<div class="instruction">
-            <p><?php the_excerpt() ?></p>
+			<div class="instruction neon-box">
+				<p><?php the_excerpt() ?></p>
 
-            <div class="navitation">
-                <?php the_post_navigation(); ?>
-            </div>	
+				<div class="navitation">
+					<?php the_post_navigation(); ?>
+				</div>	
             </div>	
            
 			<p><?php the_content() ?></p>

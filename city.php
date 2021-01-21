@@ -26,33 +26,28 @@ get_header(); ?>
 <script type="module" src="<?php echo esc_url($src); ?>"></script>
 
 <div id="threeDfrontpage" class="page col-md-12">
-    <!-- <div  id='loading-screen' class="loading-container">
-            <div id="loading-status" class="loading-circle">
-                <div class="loader">
-                    <p>loading... <br>
-                    </p>
-                </div>
-            </div>
-	</div> -->
-	<div id="canvas-container">
-		<canvas id="HTMLcanvas"></canvas>
+    
+<div id="canvas-container">
+        <canvas id="HTMLcanvas"></canvas>
 	</div>
 	
 	<div id="canvas" class="online-exhibition-canvas">
        
-        <div class="instruction">	
-					<div class="absolute left flex-row">
-						<div class="dot"></div>
-						<div class="dot"></div>
-					</div>
-					<p>
-						<p id="project-title">
-							
-						</p>
+		<div id="canvas-details">
+            <div class="instruction neon-box">	
+                        <div class="absolute left flex-row">
+                            <div class="dot neon-box"></div>
+                            <div class="dot neon-box"></div>
+                        </div>
+                        <p>
+                            <p id="project-title">
+                                <?php echo $my_excerpt ?>
+                            </p>
 
-					</p>
-				
-			</div>	
+                        </p>
+                    
+            </div>
+        </div>	
 
 
     </div>

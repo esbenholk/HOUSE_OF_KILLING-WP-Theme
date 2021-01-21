@@ -12,7 +12,7 @@
  * @package HOUSE_of_KILLLING
  */
 
-get_header();
+	get_header();
 ?>
 
 <?php $src = get_stylesheet_directory_uri().'/js/tube.js';?>
@@ -20,17 +20,20 @@ get_header();
 <script type="module" src="<?php echo esc_url($src); ?>"></script>
 
 
-<div id="canvas" class="canvas-background"> 
-
-</div>
-
-<main id="primary" class="error-main">
-	<div class="error">
-		<a href="/"><img src="/wp-content/themes/house_of_killing/icons/ghosticon.png"/></a></p>
-
-		
+	<div id="canvas" class="canvas-background"> 
+			
 	</div>
-</main><!-- #main -->
+
+	<main id="primary" class="error-main">
+		<p class="neon">
+                the content is missing
+        </p>
+		<div class="error">
+			<a href="/"><img src="/wp-content/themes/house_of_killing/icons/ghosticon.png"/></a></p>
+
+			
+		</div>
+	</main><!-- #main -->
 
 <?php
 get_footer();

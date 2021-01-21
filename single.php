@@ -22,17 +22,15 @@ get_header();
 			
 
 				<div class="post-menu">
-					<div id="archive">
+					<div id="post-archive">
 						<?php if ( !function_exists('dynamic_sidebar') || !dynamic_sidebar('sidebar-2') ) ?>
 					</div>
 				</div>
 
 
-				<div id="crystal" >	
-					<div class="flex-row right absolute">
-						<div class="dot"></div>
-						<div class="dot"></div>
-						<div class="dot"></div>
+				<div id="crystal" class="neon-box">	
+					<div class="flex-row right absolute ">
+						<div class="dot neon-box"></div>
 					</div>
 
 					<img  src="https://stayvirtual.s3.amazonaws.com/crystals/greencrystal">

@@ -1,5 +1,5 @@
 /*
-Theme Name: HOUSE_OF_KILLING
+Theme Name: HOUSE_OF_KILLING2.0
 Theme URI: www.houseofkilling.com
 Description: Created by Esben Holk @ HOUSE OF KILLING
 Version: 3000
@@ -31,6 +31,27 @@ Text Domain: HOUSE_OF_KILLING
 	}
 }
 
+.neon {
+	color: var(--neongreen);
+	text-shadow:
+	  0 0 5px #fff,
+	  0 0 10px #fff,
+	  0 0 20px #fff
+  }
+.neon-box {
+	box-shadow:
+	  0 0 5px #fff,
+	  0 0 1px #fff,
+	  0 0 2px #fff,
+	  0 0 4px var(--neongreen),
+	  0 0 8px var(--neongreen),
+	  0 0 9px var(--neongreen),
+	  0 0 10px var(--neongreen),
+	  0 0 10px var(--neongreen),
+	inset 0 0 20px  var(--neongreen);
+  }
+
+
 
 	
 body,
@@ -54,15 +75,19 @@ p,
 h1,
 iframe,
 img,
-header{
+header,
+figure{
 	margin: 0;
 	padding: 0;
 	max-height: 100%;
 	max-width: 100%; 
 	object-fit: contain;
 	height: auto;
+}
 
-
+iframe{
+	width: 100%;
+	height: 60vh;
 }
 
 a{
@@ -102,16 +127,20 @@ li{
 	min-height: 30vh;
 }
 
-
-.instruction{
+#canvas-details{
 	position: absolute;
 	bottom:0;
 	left:0;
 	margin: 15px;
+	display: flex;
+	align-items: flex-end;
+
+}
+.instruction{
 	width: 300px;
 	border: 2px var(--neongreen) solid;
 	border-radius: 0 20px 0 0 ;
-	z-index: 99999;
+	z-index: 0;
 	padding: 15px;
 	font-family: 'sinistrest_caroline', cursive;
 }
@@ -194,6 +223,12 @@ button:focus{
 .canvas-background{
 	position: fixed;
 	top:0;
+}
+
+.stats{
+	border: 2px var(--neongreen) solid;
+	margin-left: 15px;
+	height: 50%;
 }
 
 
@@ -595,43 +630,58 @@ main site
 .post-menu{
 	width: 170px;
 }
+.teaser{
+	width: auto;
+}
 #archive{
-	width: 200px;
-	height: auto;
-	overflow-y: scroll;
-	/* pointer-events: none; */
+	margin: 15px;
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+}
+#post-archive{
+	margin-top: 30px;
+	display: flex;
+	flex-direction: column;
 }
 
 
-#archive li,
-#archive .teaser #post-title{
-	width: 70%;
-	border: 2px var(--neongreen) solid;
+.thumbnail li,
+.thumbnail #post-title{
+	position: absolute;
+	top: 50%;
+	transform: translateY(-50%);
+	width: 100%;
 	pointer-events: auto;
-	/* margin-bottom: 15px; */
-	width: auto;
-	border-radius: 0 0 15px 0;
-	font-size: 12px;
+	white-space: nowrap;
+	font-size: 15px;
 	text-transform: none;
+	text-align: center;
 	font-family: 'sinistrest_caroline', cursive;
-	padding: 5px;
-	color: white;
-	margin:0;
-	margin-bottom: 5px;
+	color: var(--neongreen);
+	text-shadow:
+	0 0 5px #fff,
+	0 0 10px #fff,
+	0 0 20px var(--neongreen);
+
 	background-color: rgba(0,0,0,0);
 }
-#archive li:hover,
-#archive .teaser #post-title:hover{
+.thumbnail:hover{
 	background-color: var(--neongreen)
 }
-
-
-
-#archive li a{
-	color: white;
+.thumbnail img:hover{
+	opacity: 0.5;
 }
-#archive li:hover{
-	background-color: var(--neongreen);
+.thumbnail{
+	position: relative;
+	width: 250px;
+	height: 250px;
+}
+
+.thumbnail img{
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
 }
 
 #post-menu h1,
@@ -700,6 +750,7 @@ main site
 	width: 100%;
 	height: 100vh;
 	z-index: 99999;
+	margin-top: 30px;
 }
 .error p{
 	text-align: center
@@ -796,6 +847,7 @@ footer
 	color: white;
 
 
+
 }
 
 
@@ -823,7 +875,7 @@ Menu
   
 .main-menu {
 	position:fixed;
-	margin: 15px;
+	margin-top: 30px;
 	top: 0;
 	left: 0;
 	height: 100%;
@@ -857,12 +909,13 @@ Menu
   
   }
   .main-menu .main-navigation .menu li {
+
 	border: 2px var(--neongreen) solid;
 	background-color: var(--neongreen);
-
 	pointer-events: auto;
-	margin-top: 15px;
-	width: 150px;
+	
+	margin: 15px;
+	
 	border-radius: 0 0 15px 0;
 	-webkit-transform: translate(-30%, 0);
 	-ms-transform: translate(-30%, 0);
@@ -872,10 +925,21 @@ Menu
 	-o-transition: all 600ms cubic-bezier(0.075, 0.82, 0.165, 1);
 	transition: all 600ms cubic-bezier(0.075, 0.82, 0.165, 1);
 	opacity: 0;
+	z-index: 999999999;
+	box-shadow:
+	0 0 5px #fff,
+	0 0 1px #fff,
+	0 0 2px #fff,
+	0 0 4px var(--neongreen),
+	0 0 8px var(--neongreen),
+	0 0 9px var(--neongreen),
+	0 0 10px var(--neongreen),
+	0 0 10px var(--neongreen),
+  	inset 0 0 20px  var(--neongreen);
   }
-  .main-menu .main-navigation .menu li a{
+  /* .main-menu .main-navigation .menu li a{
 	width: 100%;
-  }
+  } */
 
   .main-menu .main-navigation .menu li ul.sub-menu {
 	background-color: #000;
@@ -1177,10 +1241,21 @@ Menu
 		padding-top: 120px;
 		padding-bottom: 120px;
 	}
-	.instruction{
+	#canvas-details{
+		max-width: 200px;
+		font-size: 10px;
 	
-		max-width: 50%;
+	}
+	.stats{
+		display: none;
+	}
 	
+	
+	.thumbnail{
+		position: relative;
+		width: 100%;
+		height: auto;
+		margin-bottom: 15px;
 	}
 	#single-project{
 		flex-direction: column-reverse;

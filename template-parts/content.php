@@ -24,8 +24,8 @@
 				?>
 				<?php house_of_killing_post_thumbnail(); ?>
 				<div class="flex-row right absolute">
-						<div class="dot"></div>
-						<div class="dot"></div>
+						<div class="dot neon-box"></div>
+						<div class="dot neon-box"></div>
 					</div>
 			</div>
 		</header><!-- .entry-header -->

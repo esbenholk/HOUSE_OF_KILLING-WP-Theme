@@ -9,7 +9,7 @@
  *
  * @link https://developer.wordpress.org/themes/basics/template-hierarchy/
  *
- * @package HOUSE_of_KILLLING
+ * @package HOUSE_of_KILLLING2.0
  */
 
 get_header();

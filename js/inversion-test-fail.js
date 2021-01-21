@@ -10,8 +10,7 @@ import { UnrealBloomPass } from '/wp-content/themes/house_of_killing/three/examp
 import { FilmPass } from '/wp-content/themes/house_of_killing/three/examples/jsm/postprocessing/FilmPass.js';
 import Stats from '/wp-content/themes/house_of_killing_2.0/three/examples/jsm/libs/stats.module.js';
 
-/// canvas element
-let canvas = document.getElementById("canvas");
+
 
 let islandDescriptors = ["avatar island", "content redistribution_content003", "decay_active002", "shy_boy1992", "island", "texture_composition_collage2.0", "all I am is more of you", "camping", "skeleton", "collage2020_finalVersion11"]
 ///loading manager
@@ -36,31 +35,12 @@ const loader = new GLTFLoader(manager);
 const textureLoader = new THREE.TextureLoader(manager);
 textureLoader.crossOrigin = "Anonymous";
 
-///renderer
-const renderer = new THREE.WebGLRenderer( { preserveDrawingBuffer: true} );
-renderer.setPixelRatio( window.devicePixelRatio );
-renderer.setSize( window.innerWidth, window.innerHeight );
-renderer.toneMapping = THREE.ReinhardToneMapping;
-renderer.autoClear = false;
-
-
-canvas.appendChild( renderer.domElement );
-
-
-////scene titles
-let title = document.getElementById("canvas-title")
-let canvasDetails = document.getElementById("canvas-details")
-
-
-/// scene variables
-let raycaster = new THREE.Raycaster();
-let mouse = new THREE.Vector2();
-
 var stats = new Stats();
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera( 55, window.innerWidth / window.innerHeight, 1, 20000 );
 camera.position.set( 10, 100, 100 );
 camera.lookAt( 0, 0, 0 );
+
 
 let clock = new THREE.Clock();
 let sun = new THREE.Vector3();
@@ -76,103 +56,6 @@ let objects =[];
 
 ///set rotate to false for still scene
 let rotate = true;
-
-
-/// post processing variables
-const ENTIRE_SCENE = 0, BLOOM_SCENE = 1;
-
-const bloomLayer = new THREE.Layers();
-bloomLayer.set( BLOOM_SCENE );
-
-const bloom_params = {
-    exposure: 1,
-    bloomStrength: 5,
-    bloomThreshold: 0,
-    bloomRadius: 0,
-    scene: "Scene with Glow"
-};
-const renderScene = new RenderPass( scene, camera );
-
-const bloomPass = new UnrealBloomPass( new THREE.Vector2( window.innerWidth, window.innerHeight ), 1.5, 0.4, 0.85 );
-bloomPass.threshold = bloom_params.bloomThreshold;
-bloomPass.strength = bloom_params.bloomStrength;
-bloomPass.radius = bloom_params.bloomRadius;
-
-const bloomComposer = new EffectComposer( renderer );
-bloomComposer.renderToScreen = false;
-bloomComposer.addPass( renderScene );
-bloomComposer.addPass( bloomPass );
-
-const finalPass = new ShaderPass(
-    new THREE.ShaderMaterial( {
-        uniforms: {
-            baseTexture: { value: null },
-            bloomTexture: { value: bloomComposer.renderTarget2.texture }
-        },
-        vertexShader: document.getElementById( 'vertexshader' ).textContent,
-        fragmentShader: document.getElementById( 'fragmentshader' ).textContent,
-        defines: {}
-    } ), "baseTexture"
-);
-
-finalPass.needsSwap = true;
-
-
-const finalComposer = new EffectComposer( renderer );
-
-finalComposer.addPass( renderScene );
-const filmPass = new FilmPass(
-    0.35,   // noise intensity
-    0.025,  // scanline intensity
-    1,    // scanline count
-    false,  // grayscale
-);
-filmPass.renderToScreen = true;
-finalComposer.addPass( filmPass);
-
-finalComposer.addPass( finalPass );
-
-
-
-
-const darkMaterial = new THREE.MeshBasicMaterial( { color: "black" } );
-const materials = {};
-
-
-function disposeMaterial( obj ) {
-
-    if ( obj.material ) {
-
-        obj.material.dispose();
-
-    }
-
-}
-
-function darkenNonBloomed( obj ) {
-
-    if ( obj.isMesh && bloomLayer.test( obj.layers ) === false ) {
-
-        materials[ obj.uuid ] = obj.material;
-        obj.material = darkMaterial;
-
-    }
-
-}
-
-function restoreMaterial( obj ) {
-
-    if ( materials[ obj.uuid ] ) {
-
-        obj.material = materials[ obj.uuid ];
-        delete materials[ obj.uuid ];
-
-    }
-
-}
-
-
-
 
 
 ///wind simulation variables
@@ -535,12 +418,9 @@ function createFlag(url, x, z, rotationY, xvalue, yvalue, zvalue){
 
 
 
-setupScene();
-
-function setupScene() {
-    scene.traverse( disposeMaterial );
-	scene.children.length = 0;
-
+function main() {
+  const canvas = document.querySelector('#c');
+  const renderer = new THREE.WebGLRenderer({canvas});
 
     //lights
     // scene.add( new THREE.AmbientLight( 0x404040,  0.25 ) );
@@ -548,22 +428,18 @@ function setupScene() {
     const sphere1geometry = new THREE.IcosahedronBufferGeometry( 3, 15 );
     const sphere1material =  new THREE.MeshBasicMaterial( { color: 0xff0040 } )
     let sphere1 = new THREE.Mesh( sphere1geometry, sphere1material );
-    sphere1.layers.enable( BLOOM_SCENE );
 
     const sphere2geometry = new THREE.IcosahedronBufferGeometry( 2, 15 );
     const sphere2material =  new THREE.MeshBasicMaterial( { color: 0x2aff00 } )
     let sphere2 = new THREE.Mesh( sphere2geometry, sphere2material );
-    sphere2.layers.enable( BLOOM_SCENE );
 
     const sphere3geometry = new THREE.IcosahedronBufferGeometry( 1.5, 15 );
     const sphere3material =  new THREE.MeshBasicMaterial( { color: 0xff0040 } )
     let sphere3 = new THREE.Mesh( sphere3geometry, sphere3material );
-    sphere3.layers.enable( BLOOM_SCENE );
 
     const sphere4geometry = new THREE.IcosahedronBufferGeometry( 1, 15 );
     const sphere4material =  new THREE.MeshBasicMaterial( { color: 0x002aff } )
     let sphere4 = new THREE.Mesh( sphere4geometry, sphere4material );
-    sphere4.layers.enable( BLOOM_SCENE );
 
     
     
@@ -665,124 +541,293 @@ function setupScene() {
     addObjects( '/wp-content/themes/house_of_killing/images/sims/scene.gltf', 39, 0, -45, 0.01, false, true);
 
 
-    window.addEventListener( 'resize', onWindowResize, false );
-    canvas.addEventListener( 'mousemove', onMouseMove, false );
+  const lutTextures = [
+    { name: 'identity',           size: 2, filter: true , },
+    { name: 'identity no filter', size: 2, filter: false, },
+    { name: 'custom',          url: 'https://threejsfundamentals.org/threejs/resources/images/lut/3dlut-red-only-s16.png' },
+    { name: 'monochrome',      url: 'https://threejsfundamentals.org/threejs/resources/images/lut/monochrome-s8.png' },
+    { name: 'sepia',           url: 'https://threejsfundamentals.org/threejs/resources/images/lut/sepia-s8.png' },
+    { name: 'saturated',       url: 'https://threejsfundamentals.org/threejs/resources/images/lut/saturated-s8.png', },
+    { name: 'posterize',       url: 'https://threejsfundamentals.org/threejs/resources/images/lut/posterize-s8n.png', },
+    { name: 'posterize-3-rgb', url: 'https://threejsfundamentals.org/threejs/resources/images/lut/posterize-3-rgb-s8n.png', },
+    { name: 'posterize-3-lab', url: 'https://threejsfundamentals.org/threejs/resources/images/lut/posterize-3-lab-s8n.png', },
+    { name: 'posterize-4-lab', url: 'https://threejsfundamentals.org/threejs/resources/images/lut/posterize-4-lab-s8n.png', },
+    { name: 'posterize-more',  url: 'https://threejsfundamentals.org/threejs/resources/images/lut/posterize-more-s8n.png', },
+    { name: 'inverse',         url: 'https://threejsfundamentals.org/threejs/resources/images/lut/inverse-s8.png', },
+    { name: 'color negative',  url: 'https://threejsfundamentals.org/threejs/resources/images/lut/color-negative-s8.png', },
+    { name: 'high contrast',   url: 'https://threejsfundamentals.org/threejs/resources/images/lut/high-contrast-bw-s8.png', },
+    { name: 'funky contrast',  url: 'https://threejsfundamentals.org/threejs/resources/images/lut/funky-contrast-s8.png', },
+    { name: 'nightvision',     url: 'https://threejsfundamentals.org/threejs/resources/images/lut/nightvision-s8.png', },
+    { name: 'thermal',         url: 'https://threejsfundamentals.org/threejs/resources/images/lut/thermal-s8.png', },
+    { name: 'b/w',             url: 'https://threejsfundamentals.org/threejs/resources/images/lut/black-white-s8n.png', },
+    { name: 'hue +60',         url: 'https://threejsfundamentals.org/threejs/resources/images/lut/hue-plus-60-s8.png', },
+    { name: 'hue +180',        url: 'https://threejsfundamentals.org/threejs/resources/images/lut/hue-plus-180-s8.png', },
+    { name: 'hue -60',         url: 'https://threejsfundamentals.org/threejs/resources/images/lut/hue-minus-60-s8.png', },
+    { name: 'red to cyan',     url: 'https://threejsfundamentals.org/threejs/resources/images/lut/red-to-cyan-s8.png' },
+    { name: 'blues',           url: 'https://threejsfundamentals.org/threejs/resources/images/lut/blues-s8.png' },
+    { name: 'infrared',        url: 'https://threejsfundamentals.org/threejs/resources/images/lut/infrared-s8.png' },
+    { name: 'radioactive',     url: 'https://threejsfundamentals.org/threejs/resources/images/lut/radioactive-s8.png' },
+    { name: 'goolgey',         url: 'https://threejsfundamentals.org/threejs/resources/images/lut/googley-s8.png' },
+    { name: 'bgy',             url: 'https://threejsfundamentals.org/threejs/resources/images/lut/bgy-s8.png' },
+  ];
 
-   
-    stats.showPanel( 1 );
-    canvasDetails.appendChild( stats.domElement );
+  const makeIdentityLutTexture = function() {
+    const identityLUT = new Uint8Array([
+        0,   0,   0, 255,  // black
+      255,   0,   0, 255,  // red
+        0,   0, 255, 255,  // blue
+      255,   0, 255, 255,  // magenta
+        0, 255,   0, 255,  // green
+      255, 255,   0, 255,  // yellow
+        0, 255, 255, 255,  // cyan
+      255, 255, 255, 255,  // white
+    ]);
 
-    animate(0);
+    return function(filter) {
+      const texture = new THREE.DataTexture(identityLUT, 4, 2, THREE.RGBAFormat);
+      texture.minFilter = filter;
+      texture.magFilter = filter;
+      texture.needsUpdate = true;
+      texture.flipY = false;
+      return texture;
+    };
+  }();
 
+  const makeLUTTexture = function() {
+    const imgLoader = new THREE.ImageLoader();
+    const ctx = document.createElement('canvas').getContext('2d');
+
+    return function(info) {
+      const texture = makeIdentityLutTexture(
+          info.filter ? THREE.LinearFilter : THREE.NearestFilter);
+
+      if (info.url) {
+        const lutSize = info.size;
+
+        // set the size to 2 (the identity size). We'll restore it when the
+        // image has loaded. This way the code using the lut doesn't have to
+        // care if the image has loaded or not
+        info.size = 2;
+
+        imgLoader.load(info.url, function(image) {
+          const width = lutSize * lutSize;
+          const height = lutSize;
+          info.size = lutSize;
+          ctx.canvas.width = width;
+          ctx.canvas.height = height;
+          ctx.drawImage(image, 0, 0);
+          const imageData = ctx.getImageData(0, 0, width, height);
+
+          texture.image.data = new Uint8Array(imageData.data.buffer);
+          texture.image.width = width;
+          texture.image.height = height;
+          texture.needsUpdate = true;
+        });
+      }
+
+      return texture;
+    };
+  }();
+
+  lutTextures.forEach((info) => {
+    // if not size set get it from the filename
+    if (!info.size) {
+      // assumes filename ends in '-s<num>[n]'
+      // where <num> is the size of the 3DLUT cube
+      // and [n] means 'no filtering' or 'nearest'
+      //
+      // examples:
+      //    'foo-s16.png' = size:16, filter: true
+      //    'bar-s8n.png' = size:8, filter: false
+      const m = /-s(\d+)(n*)\.[^.]+$/.exec(info.url);
+      if (m) {
+        info.size = parseInt(m[1]);
+        info.filter = info.filter === undefined ? m[2] !== 'n' : info.filter;
+      }
+    }
+
+    info.texture = makeLUTTexture(info);
+  });
+
+  const lutNameIndexMap = {};
+  lutTextures.forEach((info, ndx) => {
+    lutNameIndexMap[info.name] = ndx;
+  });
+
+
+  const sceneBG = new THREE.Scene();
+  const cameraBG = new THREE.OrthographicCamera(-1, 1, 1, -1, -1, 1);
+
+  let bgMesh;
+  let bgTexture;
+  {
+    const loader = new THREE.TextureLoader();
+    bgTexture = loader.load('https://threejsfundamentals.org/threejs/resources/images/beach.jpg');
+    const planeGeo = new THREE.PlaneBufferGeometry(2, 2);
+    const planeMat = new THREE.MeshBasicMaterial({
+      map: bgTexture,
+      depthTest: false,
+    });
+    bgMesh = new THREE.Mesh(planeGeo, planeMat);
+    sceneBG.add(bgMesh);
+  }
+
+  function frameArea(sizeToFitOnScreen, boxSize, boxCenter, camera) {
+    const halfSizeToFitOnScreen = sizeToFitOnScreen * 0.5;
+    const halfFovY = THREE.MathUtils.degToRad(camera.fov * .5);
+    const distance = halfSizeToFitOnScreen / Math.tan(halfFovY);
+    // compute a unit vector that points in the direction the camera is now
+    // in the xz plane from the center of the box
+    const direction = (new THREE.Vector3())
+        .subVectors(camera.position, boxCenter)
+        .multiply(new THREE.Vector3(1, 0, 1))
+        .normalize();
+
+    // move the camera to a position distance units way from the center
+    // in whatever direction the camera was from the center already
+    camera.position.copy(direction.multiplyScalar(distance).add(boxCenter));
+
+    // pick some near and far values for the frustum that
+    // will contain the box.
+    camera.near = boxSize / 100;
+    camera.far = boxSize * 100;
+
+    camera.updateProjectionMatrix();
+
+    // point the camera to look at the center of the box
+    camera.lookAt(boxCenter.x, boxCenter.y, boxCenter.z);
+  }
+
+  const lutShader = {
+    uniforms: {
+      tDiffuse: { value: null },
+      lutMap:  { value: null },
+      lutMapSize: { value: 1, },
+    },
+    vertexShader: `
+      varying vec2 vUv;
+      void main() {
+        vUv = uv;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+      }
+    `,
+    fragmentShader: `
+      #include <common>
+
+      #define FILTER_LUT true
+
+      uniform sampler2D tDiffuse;
+      uniform sampler2D lutMap;
+      uniform float lutMapSize;
+
+      varying vec2 vUv;
+
+      vec4 sampleAs3DTexture(sampler2D tex, vec3 texCoord, float size) {
+        float sliceSize = 1.0 / size;                  // space of 1 slice
+        float slicePixelSize = sliceSize / size;       // space of 1 pixel
+        float width = size - 1.0;
+        float sliceInnerSize = slicePixelSize * width; // space of size pixels
+        float zSlice0 = floor( texCoord.z * width);
+        float zSlice1 = min( zSlice0 + 1.0, width);
+        float xOffset = slicePixelSize * 0.5 + texCoord.x * sliceInnerSize;
+        float yRange = (texCoord.y * width + 0.5) / size;
+        float s0 = xOffset + (zSlice0 * sliceSize);
+
+        #ifdef FILTER_LUT
+
+          float s1 = xOffset + (zSlice1 * sliceSize);
+          vec4 slice0Color = texture2D(tex, vec2(s0, yRange));
+          vec4 slice1Color = texture2D(tex, vec2(s1, yRange));
+          float zOffset = mod(texCoord.z * width, 1.0);
+          return mix(slice0Color, slice1Color, zOffset);
+
+        #else
+
+          return texture2D(tex, vec2( s0, yRange));
+
+        #endif
+      }
+
+      void main() {
+        vec4 originalColor = texture2D(tDiffuse, vUv);
+        gl_FragColor = sampleAs3DTexture(lutMap, originalColor.xyz, lutMapSize);
+      }
+    `,
+  };
+
+  const lutNearestShader = {
+    uniforms: {...lutShader.uniforms},
+    vertexShader: lutShader.vertexShader,
+    fragmentShader: lutShader.fragmentShader.replace('#define FILTER_LUT', '//'),
+  };
+
+  const effectLUT = new ShaderPass(lutShader);
+  effectLUT.renderToScreen = true;
+  const effectLUTNearest = new ShaderPass(lutNearestShader);
+  effectLUTNearest.renderToScreen = true;
+
+  const renderModel = new RenderPass(scene, camera);
+  renderModel.clear = false;  // so we don't clear out the background
+  const renderBG = new RenderPass(sceneBG, cameraBG);
+
+  const rtParameters = {
+    minFilter: THREE.LinearFilter,
+    magFilter: THREE.LinearFilter,
+    format: THREE.RGBFormat,
+  };
+  const composer = new EffectComposer(renderer, new THREE.WebGLRenderTarget(1, 1, rtParameters));
+
+  composer.addPass(renderBG);
+  composer.addPass(renderModel);
+  composer.addPass(effectLUT);
+  composer.addPass(effectLUTNearest);
+
+  function resizeRendererToDisplaySize(renderer) {
+    const canvas = renderer.domElement;
+    const width = canvas.clientWidth * window.devicePixelRatio | 0;
+    const height = canvas.clientHeight * window.devicePixelRatio | 0;
+
+    const needResize = canvas.width !== width || canvas.height !== height;
+    if (needResize) {
+      renderer.setSize(width, height, false);
+    }
+    return needResize;
+  }
+
+  let then = 0;
+  function render(now) {
+    now *= 0.001;  // convert to seconds
+    const delta = now - then;
+    then = now;
+    const canvas = renderer.domElement;
+    
+
+    composer.setSize(canvas.width, canvas.height);
+    const canvasAspect = canvas.clientWidth / canvas.clientHeight;
+    camera.aspect = canvasAspect;
+    camera.updateProjectionMatrix();
+
+    
+
+    const lutInfo = lutTextures[ 11];
+
+    const effect = lutInfo.filter ? effectLUT : effectLUTNearest;
+    effectLUT.enabled = lutInfo.filter;
+    effectLUTNearest.enabled = !lutInfo.filter;
+
+    const lutTexture = lutInfo.texture;
+    effect.uniforms.lutMap.value = lutTexture;
+    effect.uniforms.lutMapSize.value = lutInfo.size;
+
+    composer.render(delta);
+
+    requestAnimationFrame(render);
+  }
+
+  requestAnimationFrame(render);
 }
 
-
-function animate(now) {
-    stats.begin();
-
- 
-
-    for (let index = 0; index < cloths.length; index++) {
-        const element = cloths[index];
-        simulate( now, element, clothGeometries[index],  element.xvalue, element.yvalue, element.zvalue);
-   
-        
-    }
-    requestAnimationFrame( animate );
-
-    render();
-
-    stats.end();
-
-}
-
-function render() {
-
-    
-
-
-    if(rotate===true){
-        theta += 0.1;
-        if(radius<100){
-            radius += 0.05;
-        }
-    
-        camera.position.x = radius * Math.sin( THREE.MathUtils.degToRad( theta ) );
-        camera.position.z = radius * Math.cos( THREE.MathUtils.degToRad( theta ) );
-        camera.position.y = 3*Math.cos( THREE.MathUtils.degToRad( theta ) );
-        camera.lookAt( scene.position );
-
-        camera.updateMatrixWorld();
-
-    }
-
-
-    for (let u = 0; u < clothGeometries.length; u++) {
-        let clothGeometry= clothGeometries[u];
-
-        for (let index = 0; index < cloths.length; index++) {
-            const element = cloths[index];
-          
-            var p = element.particles;
-    
-            for ( var i = 0, il = p.length; i < il; i ++ ) {
-    
-                var v = p[ i ].position;
-    
-                clothGeometry.attributes.position.setXYZ( i, v.x, v.y, v.z );
-    
-            }
-    
-            clothGeometry.attributes.position.needsUpdate = true;
-    
-            clothGeometry.computeVertexNormals();
-    
-            
-        }
-        
-    }
-
-    for (let index = 0; index < objects.length; index++) {
-        const element = objects[index];
-        element.rotation.z += 0.01;
-        
-    }
-    water.material.uniforms[ 'time' ].value += 1.0 / 60.0;
-
-    const time = Date.now() * 0.0003;
-	const delta = clock.getDelta();
-
-    light1.position.x = Math.sin( time * 0.7 ) * 50;
-    light1.position.y = Math.cos( time * 0.5 ) * 50;
-    light1.position.z = Math.cos( time * 0.3 ) * 50;
-
-    light2.position.x = Math.sin( time * 0.7 ) * 50;
-    light2.position.y = Math.cos( time * 0.3 ) * 50;
-    light2.position.z = Math.cos( time * 0.5 ) * 50;
-
-    light3.position.x = Math.sin( time * 0.2 ) * 50;
-    light3.position.y = Math.cos( time * 0.7 ) * 50;
-    light3.position.z = Math.cos( time * 0.5 ) * 50;
-
-    light4.position.x = Math.sin( time * 0.6 ) * 50;
-    light4.position.y = Math.cos( time * 0.3 ) * 50;
-    light4.position.z = Math.cos( time * 0.5 ) * 50;
-
-
-
-    // render scene with bloom
-    scene.traverse( darkenNonBloomed );
-    bloomComposer.render();
-    scene.traverse( restoreMaterial );
-
-
-
-    // render the entire scene, then render bloom scene on top
-    finalComposer.render();
-
-
-}
-
+main();
 
 
 
