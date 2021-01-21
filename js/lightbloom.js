@@ -8,7 +8,7 @@ import { RenderPass } from '/wp-content/themes/house_of_killing/three/examples/j
 import { ShaderPass } from '/wp-content/themes/house_of_killing/three/examples/jsm/postprocessing/ShaderPass.js';
 import { UnrealBloomPass } from '/wp-content/themes/house_of_killing/three/examples/jsm/postprocessing/UnrealBloomPass.js';
 import { FilmPass } from '/wp-content/themes/house_of_killing/three/examples/jsm/postprocessing/FilmPass.js';
-import Stats from '/wp-content/themes/house_of_killing_2.0/three/examples/jsm/libs/stats.module.js';
+import Stats from '/wp-content/themes/house_of_killing/three/examples/jsm/libs/stats.module.js';
 
 /// canvas element
 let canvas = document.getElementById("canvas");

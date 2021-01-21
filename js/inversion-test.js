@@ -2,7 +2,7 @@ import * as THREE from '/wp-content/themes/house_of_killing/three/build/three.mo
 
 import { GLTFLoader } from '/wp-content/themes/house_of_killing/three/examples/jsm/loaders/GLTFLoader.js';
 import { EffectComposer } from '/wp-content/themes/house_of_killing/three/examples/jsm/postprocessing/EffectComposer.js';
-import Stats from '/wp-content/themes/house_of_killing_2.0/three/examples/jsm/libs/stats.module.js';
+import Stats from '/wp-content/themes/house_of_killing/three/examples/jsm/libs/stats.module.js';
 import { Water } from '/wp-content/themes/house_of_killing/three/examples/jsm/objects/Water.js';
 import { Sky } from '/wp-content/themes/house_of_killing/three/examples/jsm/objects/Sky.js';
 import { RenderPass } from '/wp-content/themes/house_of_killing/three/examples/jsm/postprocessing/RenderPass.js';
