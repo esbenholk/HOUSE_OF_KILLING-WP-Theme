@@ -1,65 +1,35 @@
 import * as THREE from '/wp-content/themes/house_of_killing/three/build/three.module.js';
-import { Water } from '/wp-content/themes/house_of_killing/three/examples/jsm/objects/Water.js';
-import { Sky } from '/wp-content/themes/house_of_killing/three/examples/jsm/objects/Sky.js';
 
 import { GLTFLoader } from '/wp-content/themes/house_of_killing/three/examples/jsm/loaders/GLTFLoader.js';
 import { EffectComposer } from '/wp-content/themes/house_of_killing/three/examples/jsm/postprocessing/EffectComposer.js';
+import { Water } from '/wp-content/themes/house_of_killing/three/examples/jsm/objects/Water.js';
+import { Sky } from '/wp-content/themes/house_of_killing/three/examples/jsm/objects/Sky.js';
 import { RenderPass } from '/wp-content/themes/house_of_killing/three/examples/jsm/postprocessing/RenderPass.js';
 import { ShaderPass } from '/wp-content/themes/house_of_killing/three/examples/jsm/postprocessing/ShaderPass.js';
-import { UnrealBloomPass } from '/wp-content/themes/house_of_killing/three/examples/jsm/postprocessing/UnrealBloomPass.js';
-import { FilmPass } from '/wp-content/themes/house_of_killing/three/examples/jsm/postprocessing/FilmPass.js';
-
 import { OrbitControls } from '/wp-content/themes/house_of_killing/three/examples/jsm/controls/OrbitControls.js';
 
-
-/// canvas element
-let canvas = document.getElementById("canvas");
-
 let islandDescriptors = ["avatar island", "content redistribution_content003", "decay_active002", "shy_boy1992", "island", "texture_composition_collage2.0", "all I am is more of you", "camping", "skeleton", "collage2020_finalVersion11"]
-///loading manager
-const manager = new THREE.LoadingManager();
-
-manager.onLoad = function ( ) {
-    document.getElementById('loading-screen').remove()
-
-};
-
-
-manager.onProgress = function ( url, itemsLoaded, itemsTotal ) {
-    ///should i do something on progress?
-};
-
-manager.onError = function ( url ) {
-    console.log( 'There was an error loading ' + url );
-    document.getElementById('loading-status').innerHTML = "<div class='missing-content'><img src='/wp-content/themes/house_of_killing/icons/ghosticon.png'/><p>missing content</p></div>"
-};
-
-const loader = new GLTFLoader(manager);
-const textureLoader = new THREE.TextureLoader(manager);
-textureLoader.crossOrigin = "Anonymous";
-
-///renderer
-const renderer = new THREE.WebGLRenderer( { preserveDrawingBuffer: true} );
-renderer.setPixelRatio( window.devicePixelRatio );
-renderer.setSize( window.innerWidth, window.innerHeight );
-renderer.toneMapping = THREE.ReinhardToneMapping;
-renderer.autoClear = false;
-
-
-canvas.appendChild( renderer.domElement );
-
 
 ////scene titles
 let title = document.getElementById("canvas-title")
+let canvasDetails = document.getElementById("canvas-details")
 
 
 /// scene variables
 let raycaster = new THREE.Raycaster();
 let mouse = new THREE.Vector2();
 
-
 const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera( 55, window.innerWidth / window.innerHeight, 1, 20000 );
+
+const sceneBG = new THREE.Scene();
+
+const canvas = document.querySelector('#c');
+const renderer = new THREE.WebGLRenderer({canvas:canvas, preserveDrawingBuffer: true });
+renderer.setPixelRatio( window.devicePixelRatio );
+let composer;
+
+
+const camera = new THREE.PerspectiveCamera( 55, window.innerWidth / window.innerHeight, 1, 50000 );
 camera.position.set( 10, 100, 100 );
 camera.lookAt( 0, 0, 0 );
 
@@ -69,120 +39,305 @@ controls.dampingFactor = 0.05;
 
 controls.screenSpacePanning = false;
 
-// controls.minDistance = 100;
-// controls.maxDistance = 500;
 
 let clock = new THREE.Clock();
 let sun = new THREE.Vector3();
+let custom_azimuth = 0.8;
 
 let light1, light2, light3, light4;
-let water;
+let water, datatexture;
 
 
 let theta = 0;
 let radius = 17;
 let objects =[];
 
-
 ///set rotate to false for still scene
 let rotate = true;
 
+let then = 0;
 
-/// post processing variables
-const ENTIRE_SCENE = 0, BLOOM_SCENE = 1;
 
-const bloomLayer = new THREE.Layers();
-bloomLayer.set( BLOOM_SCENE );
+//manager
+const manager = new THREE.LoadingManager();
 
-const bloom_params = {
-    exposure: 1,
-    bloomStrength: 5,
-    bloomThreshold: 0,
-    bloomRadius: 0,
-    scene: "Scene with Glow"
+manager.onLoad = function ( ) {
+    document.getElementById('loading-screen').remove()
+
 };
-const renderScene = new RenderPass( scene, camera );
 
-const bloomPass = new UnrealBloomPass( new THREE.Vector2( window.innerWidth, window.innerHeight ), 1.5, 0.4, 0.85 );
-bloomPass.threshold = bloom_params.bloomThreshold;
-bloomPass.strength = bloom_params.bloomStrength;
-bloomPass.radius = bloom_params.bloomRadius;
+manager.onProgress = function ( url, itemsLoaded, itemsTotal ) {
+    ///should i do something on progress?
+};
 
-const bloomComposer = new EffectComposer( renderer );
-bloomComposer.renderToScreen = false;
-bloomComposer.addPass( renderScene );
-bloomComposer.addPass( bloomPass );
+manager.onError = function ( url ) {
+    document.getElementById('loading-status').innerHTML = "<div class='missing-content'><img src='/wp-content/themes/house_of_killing/icons/ghosticon.png'/><p>missing content</p></div>"
+};
 
-const finalPass = new ShaderPass(
-    new THREE.ShaderMaterial( {
-        uniforms: {
-            baseTexture: { value: null },
-            bloomTexture: { value: bloomComposer.renderTarget2.texture }
-        },
-        vertexShader: document.getElementById( 'vertexshader' ).textContent,
-        fragmentShader: document.getElementById( 'fragmentshader' ).textContent,
-        defines: {}
-    } ), "baseTexture"
-);
-
-finalPass.needsSwap = true;
-
-
-const finalComposer = new EffectComposer( renderer );
-
-finalComposer.addPass( renderScene );
-const filmPass = new FilmPass(
-    0.35,   // noise intensity
-    0.025,  // scanline intensity
-    1,    // scanline count
-    false,  // grayscale
-);
-filmPass.renderToScreen = true;
-finalComposer.addPass( filmPass);
-
-finalComposer.addPass( finalPass );
+const loader = new GLTFLoader(manager);
+const textureLoader = new THREE.TextureLoader(manager);
+textureLoader.crossOrigin = "Anonymous";
 
 
 
-const darkMaterial = new THREE.MeshBasicMaterial( { color: "black" } );
-const materials = {};
+const lutTextures = [
+   
+    { name: 'inverse',         url: 'https://threejsfundamentals.org/threejs/resources/images/lut/inverse-s8.png', },
+  
+];
 
+const makeIdentityLutTexture = function() {
+    const identityLUT = new Uint8Array([
+        0,   0,   0, 255,  // black
+    255,   0,   0, 255,  // red
+        0,   0, 255, 255,  // blue
+    255,   0, 255, 255,  // magenta
+        0, 255,   0, 255,  // green
+    255, 255,   0, 255,  // yellow
+        0, 255, 255, 255,  // cyan
+    255, 255, 255, 255,  // white
+    ]);
 
-function disposeMaterial( obj ) {
+    return function(filter) {
+    const texture = new THREE.DataTexture(identityLUT, 4, 2, THREE.RGBAFormat);
+    texture.minFilter = filter;
+    texture.magFilter = filter;
+    texture.needsUpdate = true;
+    texture.flipY = false;
+    return texture;
+    };
+}();
 
-    if ( obj.material ) {
+const makeLUTTexture = function() {
+    const imgLoader = new THREE.ImageLoader();
+    const ctx = document.createElement('canvas').getContext('2d');
 
-        obj.material.dispose();
+    return function(info) {
+    const texture = makeIdentityLutTexture(
+        info.filter ? THREE.LinearFilter : THREE.NearestFilter);
 
+    if (info.url) {
+        const lutSize = info.size;
+
+        // set the size to 2 (the identity size). We'll restore it when the
+        // image has loaded. This way the code using the lut doesn't have to
+        // care if the image has loaded or not
+        info.size = 2;
+
+        imgLoader.load(info.url, function(image) {
+        const width = lutSize * lutSize;
+        const height = lutSize;
+        info.size = lutSize;
+        ctx.canvas.width = width;
+        ctx.canvas.height = height;
+        ctx.drawImage(image, 0, 0);
+        const imageData = ctx.getImageData(0, 0, width, height);
+
+        texture.image.data = new Uint8Array(imageData.data.buffer);
+        texture.image.width = width;
+        texture.image.height = height;
+        texture.needsUpdate = true;
+        });
     }
 
-}
+    return texture;
+    };
+}();
 
-function darkenNonBloomed( obj ) {
-
-    if ( obj.isMesh && bloomLayer.test( obj.layers ) === false ) {
-
-        materials[ obj.uuid ] = obj.material;
-        obj.material = darkMaterial;
-
+lutTextures.forEach((info) => {
+    // if not size set get it from the filename
+    if (!info.size) {
+    // assumes filename ends in '-s<num>[n]'
+    // where <num> is the size of the 3DLUT cube
+    // and [n] means 'no filtering' or 'nearest'
+    //
+    // examples:
+    //    'foo-s16.png' = size:16, filter: true
+    //    'bar-s8n.png' = size:8, filter: false
+    const m = /-s(\d+)(n*)\.[^.]+$/.exec(info.url);
+    if (m) {
+        info.size = parseInt(m[1]);
+        info.filter = info.filter === undefined ? m[2] !== 'n' : info.filter;
+    }
     }
 
-}
+    info.texture = makeLUTTexture(info);
+});
 
-function restoreMaterial( obj ) {
+const lutNameIndexMap = {};
+lutTextures.forEach((info, ndx) => {
+    lutNameIndexMap[info.name] = ndx;
+});
 
-    if ( materials[ obj.uuid ] ) {
+const lutSettings = {
+    lut: lutNameIndexMap.custom,
+};
 
-        obj.material = materials[ obj.uuid ];
-        delete materials[ obj.uuid ];
+const lutShader = {
+    uniforms: {
+    tDiffuse: { value: null },
+    lutMap:  { value: null },
+    lutMapSize: { value: 1, },
+    },
+    vertexShader: `
+    varying vec2 vUv;
+    void main() {
+        vUv = uv;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+    }
+    `,
+    fragmentShader: `
+    #include <common>
 
+    #define FILTER_LUT true
+
+    uniform sampler2D tDiffuse;
+    uniform sampler2D lutMap;
+    uniform float lutMapSize;
+
+    varying vec2 vUv;
+
+    vec4 sampleAs3DTexture(sampler2D tex, vec3 texCoord, float size) {
+        float sliceSize = 1.0 / size;                  // space of 1 slice
+        float slicePixelSize = sliceSize / size;       // space of 1 pixel
+        float width = size - 1.0;
+        float sliceInnerSize = slicePixelSize * width; // space of size pixels
+        float zSlice0 = floor( texCoord.z * width);
+        float zSlice1 = min( zSlice0 + 1.0, width);
+        float xOffset = slicePixelSize * 0.5 + texCoord.x * sliceInnerSize;
+        float yRange = (texCoord.y * width + 0.5) / size;
+        float s0 = xOffset + (zSlice0 * sliceSize);
+
+        #ifdef FILTER_LUT
+
+        float s1 = xOffset + (zSlice1 * sliceSize);
+        vec4 slice0Color = texture2D(tex, vec2(s0, yRange));
+        vec4 slice1Color = texture2D(tex, vec2(s1, yRange));
+        float zOffset = mod(texCoord.z * width, 1.0);
+        return mix(slice0Color, slice1Color, zOffset);
+
+        #else
+
+        return texture2D(tex, vec2( s0, yRange));
+
+        #endif
     }
 
+    void main() {
+        vec4 originalColor = texture2D(tDiffuse, vUv);
+        gl_FragColor = sampleAs3DTexture(lutMap, originalColor.xyz, lutMapSize);
+    }
+    `,
+};
+
+const lutNearestShader = {
+    uniforms: {...lutShader.uniforms},
+    vertexShader: lutShader.vertexShader,
+    fragmentShader: lutShader.fragmentShader.replace('#define FILTER_LUT', '//'),
+};
+
+const effectLUT = new ShaderPass(lutShader);
+effectLUT.renderToScreen = true;
+const effectLUTNearest = new ShaderPass(lutNearestShader);
+effectLUTNearest.renderToScreen = true;
+
+const renderModel = new RenderPass(scene, camera);
+renderModel.clear = false;  // so we don't clear out the background
+const renderBG = new RenderPass(sceneBG, camera);
+
+const rtParameters = {
+    minFilter: THREE.LinearFilter,
+    magFilter: THREE.LinearFilter,
+    format: THREE.RGBFormat,
+};
+
+///canvas with data stream
+let c, ctx;
+
+function drawCanvas(){
+      // geting canvas by Boujjou Achraf
+      c = document.getElementById("HTMLcanvas");
+      c.style.display = "none"
+      ctx = c.getContext("2d");
+  
+      //making the canvas full screen
+      c.height = 700;
+      c.width = 200;
+  
+      var wipeBlock1 = "██"; //Block to clear
+      var wipeBlock2 = "▉"; //Block to clear
+      //chinese characters - taken from the unicode charset
+      var matrix =
+        "help, lost, hej, <3, :), :(, :0, xx, 404 "; //子月刀馬日
+      //converting the string into an array of single characters
+      matrix = matrix.split(",");
+  
+      var font_size = 20;
+      ctx.font = font_size + "px monospace";
+  
+      var columns = c.width / font_size; //number of columns for the rain
+      //one per column
+      var drops = []; //Array of drops
+      var speed = []; //Frames till next move
+      var sMem = []; //Drop speed
+  
+      //x below is the x coordinate
+      //1 = y co-ordinate of the drop(same for every drop initially)
+      for (var x = 0; x < columns; x++) {
+        drops[x] = 1;
+        sMem[x] = 1;
+        speed[x] = 0;
+      }
+  
+      //drawing the characters
+      function draw() {
+        //Black BG for the canvas
+        //translucent BG to show trail
+        ctx.shadowColor = "#002aff";
+        ctx.shadowBlur = 0;
+        ctx.fillStyle = "rgba(250, 255, 0, 0.03)";
+        ctx.fillRect(0, 0, c.width, c.height);
+  
+        //looping over drops
+        for (var i = 0; i < drops.length; i++) {
+          //sending the drop back to the top randomly after it has crossed the screen
+          //adding a randomness to the reset to make the drops scattered on the Y axis
+          if (drops[i] * font_size > c.height && Math.random() > 0.985) {
+            drops[i] = 0;
+            sMem[i] = 1 + Math.floor(Math.random() * 3);
+            speed[i] = 0;
+          }
+  
+          //incrementing Y coordinate
+          if (speed[i] >= sMem[i]) {
+            ctx.fillStyle = "#a300ff"; //black text
+            ctx.shadowBlur = 0;
+  
+            ctx.fillText(wipeBlock1, i * font_size, drops[i] * font_size); //x = i*font_size, y = value of drops[i]*font_size
+            ctx.shadowBlur = 0;
+            ctx.fillText(wipeBlock2, i * font_size, drops[i] * font_size); //x = i*font_size, y = value of drops[i]*font_size
+            ctx.shadowBlur = 0;
+            var text = matrix[Math.floor(Math.random() * matrix.length)]; //a random chinese character to print
+            ctx.shadowColor = "#0f0";
+            ctx.shadowBlur = 2;
+            ctx.fillStyle = "#0f0"; //green text
+            ctx.fillText(text, i * font_size, drops[i] * font_size); //x = i*font_size, y = value of drops[i]*font_size
+            ctx.shadowColor = "#fff";
+            ctx.shadowBlur = 2;
+            ctx.fillStyle = "#fff"; //white text
+            ctx.fillText(text, i * font_size, (drops[i] + 1) * font_size); //x = i*font_size, y = value of drops[i]*font_size
+            drops[i]++;
+            speed[i] = 0;
+          } else {
+            speed[i]++;
+          }
+        }
+        // material.map.needsUpdate = true;
+
+      }
+      setInterval(draw, 30);
 }
-
-
-
-
+drawCanvas();
 
 ///wind simulation variables
 var DAMPING = 0.03;
@@ -459,12 +614,20 @@ function createFlag(url, x, z, rotationY, xvalue, yvalue, zvalue){
     clothTexture = textureLoader.load( url );
     clothTexture.anisotropy = 16;
 
+    // generate texture
+    datatexture = new THREE.CanvasTexture(ctx.canvas);
+    datatexture.anisotropy = renderer.capabilities.getMaxAnisotropy();
+    datatexture.needsUpdate = true;
+    datatexture.flipY = false;
+
+
+
 
     cloths.push(cloth)
     const group = new THREE.Group();
 
     var clothMaterial = new THREE.MeshLambertMaterial( {
-        map: clothTexture,
+        map: datatexture,
         side: THREE.DoubleSide,
         alphaTest: 0.5
     } );
@@ -487,7 +650,7 @@ function createFlag(url, x, z, rotationY, xvalue, yvalue, zvalue){
         alphaTest: 0.5
     } );
 
-    object.userData = {title: ["empty flag", "tell me what to say", "declare (in)dependence"]}
+    object.userData = {title: ["empty flag", "tell me what to say", "link to Data City"], url: "/data-city"}
 
     var poleGeo = new THREE.BoxBufferGeometry( 5, 375, 5 );
     var poleMat = new THREE.MeshLambertMaterial();
@@ -540,84 +703,72 @@ function createFlag(url, x, z, rotationY, xvalue, yvalue, zvalue){
     group.scale.set(0.06,0.06,0.06)
     
     scene.add(group)
-
-    
-   
-   
-
-
 }
 
 
-setupScene();
+function main() {
 
-function setupScene() {
-    scene.traverse( disposeMaterial );
-	scene.children.length = 0;
+    composer = new EffectComposer(renderer, new THREE.WebGLRenderTarget(1, 1, rtParameters));
 
+    composer.addPass(renderBG);
+    composer.addPass(renderModel);
+    composer.addPass(effectLUT);
+    composer.addPass(effectLUTNearest);
 
-    //lights
-    // scene.add( new THREE.AmbientLight( 0x404040,  0.25 ) );
+    const material = new THREE.MeshPhongMaterial({
+        color: 0xff0040,
+        opacity: 0,
+        transparent: true,
+      });
 
     const sphere1geometry = new THREE.IcosahedronBufferGeometry( 3, 15 );
-    const sphere1material =  new THREE.MeshBasicMaterial( { color: 0xff0040 } )
-    let sphere1 = new THREE.Mesh( sphere1geometry, sphere1material );
-    sphere1.layers.enable( BLOOM_SCENE );
+    let sphere1 = new THREE.Mesh( sphere1geometry, material );
 
-    const sphere2geometry = new THREE.IcosahedronBufferGeometry( 2, 15 );
-    const sphere2material =  new THREE.MeshBasicMaterial( { color: 0x2aff00 } )
-    let sphere2 = new THREE.Mesh( sphere2geometry, sphere2material );
-    sphere2.layers.enable( BLOOM_SCENE );
+    let sphere2 = new THREE.Mesh( sphere1geometry, material );
 
-    const sphere3geometry = new THREE.IcosahedronBufferGeometry( 1.5, 15 );
-    const sphere3material =  new THREE.MeshBasicMaterial( { color: 0xff0040 } )
-    let sphere3 = new THREE.Mesh( sphere3geometry, sphere3material );
-    sphere3.layers.enable( BLOOM_SCENE );
+    let sphere3 = new THREE.Mesh( sphere1geometry, material );
 
-    const sphere4geometry = new THREE.IcosahedronBufferGeometry( 1, 15 );
-    const sphere4material =  new THREE.MeshBasicMaterial( { color: 0x002aff } )
-    let sphere4 = new THREE.Mesh( sphere4geometry, sphere4material );
-    sphere4.layers.enable( BLOOM_SCENE );
+    let sphere4 = new THREE.Mesh( sphere1geometry, material );
 
-    
-    
-  
 
-    light1 = new THREE.PointLight( 0xff0040, 2, 0 );
+    light1 = new THREE.PointLight( 0x00ff63, 3, 0 );
     light1.add( sphere1 );
     scene.add( light1 );
 
-    light2 = new THREE.PointLight( 0x2aff00, 3, 0 );
+    light2 = new THREE.PointLight( 0xae00ff, 4, 0 );
     light2.add( sphere2 );
     scene.add( light2 );
 
-    light3 = new THREE.PointLight( 0xff0040, 2, 0 );
+    light3 = new THREE.PointLight( 0x00ff6f, 2, 0 );
     light3.add( sphere3 );
     scene.add( light3 );
 
-    light4 = new THREE.PointLight( 0x002aff, 4, 0 );
+    light4 = new THREE.PointLight( 0x00ff4d, 1, 0 );
     light4.add( sphere4 );
     scene.add( light4 );
-   
+
+    scene.add( new THREE.AmbientLight( 0xFFFFFF,  1 ) );
+
+    
     //water
     
     const waterGeometry = new THREE.PlaneBufferGeometry( 10000, 10000 );
 
     water = new Water(
-       waterGeometry,
-       {
-           textureWidth: 512,
-           textureHeight: 512,
-           waterNormals: textureLoader.load( '/wp-content/themes/house_of_killing/images/waternormals.jpg', function ( texture ) {
+        waterGeometry,
+        {
+            textureWidth: 512,
+            textureHeight: 512,
+            waterNormals: textureLoader.load( '/wp-content/themes/house_of_killing/images/waternormals.jpg', function ( texture ) {
 
-               texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+                texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
 
-           } ),
-           alpha: 1.0,
-           sunDirection: new THREE.Vector3(),
-           sunColor: 0x2CFC0A,
-           waterColor: 0x2CFC0A,
-           distortionScale: 3.5       }
+            } ),
+            alpha: 1.0,
+            sunDirection: new THREE.Vector3(),
+            sunColor: 0x0afc7e,
+            waterColor: 0x2CFC0A,
+            distortionScale: 3.5       }
     );
 
     water.rotation.x = - Math.PI / 2;
@@ -629,7 +780,7 @@ function setupScene() {
     // Skybox
 
     const sky = new Sky();
-    sky.scale.setScalar( 10000 );
+    sky.scale.setScalar( 1000 );
     sky.userData = {title: ["sky"]}
 
     scene.add( sky );
@@ -637,13 +788,17 @@ function setupScene() {
     const skyUniforms = sky.material.uniforms;
 
     skyUniforms[ 'turbidity' ].value = 10;
-    skyUniforms[ 'rayleigh' ].value = 2;
-    skyUniforms[ 'mieCoefficient' ].value = 0.005;
-    skyUniforms[ 'mieDirectionalG' ].value = 0.8;
+    skyUniforms[ 'rayleigh' ].value = 0;
+    skyUniforms[ 'mieCoefficient' ].value = 0.05;
+    skyUniforms[ 'mieDirectionalG' ].value = 0.9;
+  
 
     const parameters = {
-       inclination: 0.49,
-       azimuth: 0.01
+        inclination: 0.49,
+        azimuth: custom_azimuth,
+        mieDirectionalG: 0.9,
+        rayleigh: 0,
+        exposure: 0
     };
 
 
@@ -652,18 +807,18 @@ function setupScene() {
 
     function updateSun() {
 
-       const theta = Math.PI * ( parameters.inclination - 0.5 );
-       const phi = 2 * Math.PI * ( parameters.azimuth - 0.5 );
-   
-       sun.x = Math.cos( phi );
-       sun.y = Math.sin( phi ) * Math.sin( theta );
-       sun.z = Math.sin( phi ) * Math.cos( theta );
-   
-       sky.material.uniforms[ 'sunPosition' ].value.copy( sun );
-       water.material.uniforms[ 'sunDirection' ].value.copy( sun ).normalize();
-   
-       scene.environment = pmremGenerator.fromScene( sky ).texture;
-   
+        const theta = Math.PI * ( parameters.inclination - 0.5 );
+        const phi = 2 * Math.PI * ( parameters.azimuth - 0.5 );
+    
+        sun.x = Math.cos( phi );
+        sun.y = Math.sin( phi ) * Math.sin( theta );
+        sun.z = Math.sin( phi ) * Math.cos( theta );
+    
+        sky.material.uniforms[ 'sunPosition' ].value.copy( sun );
+        water.material.uniforms[ 'sunDirection' ].value.copy( sun ).normalize();
+    
+        scene.environment = pmremGenerator.fromScene( sky ).texture;
+    
     }
 
     updateSun();
@@ -680,113 +835,56 @@ function setupScene() {
 
 
     window.addEventListener( 'resize', onWindowResize, false );
-    canvas.addEventListener( 'mousemove', onMouseMove, false );
+    // canvas.addEventListener( 'mousemove', onMouseMove, false );
+    renderer.domElement.addEventListener('click', onClick, false);
 
+
+    
+
+
+
+    requestAnimationFrame(render);
     animate(0);
-
 }
 
-
-function animate(now) {
-    controls.update();
-
-    for (let index = 0; index < cloths.length; index++) {
-        const element = cloths[index];
-        simulate( now, element, clothGeometries[index],  element.xvalue, element.yvalue, element.zvalue);
-   
-        
-    }
-    requestAnimationFrame( animate );
-
-    render();
-}
-
-function render() {
-
-    
+main();
 
 
-    // if(rotate===true){
-    //     theta += 0.1;
-    //     if(radius<100){
-    //         radius += 0.05;
-    //     }
-    
-    //     camera.position.x = radius * Math.sin( THREE.MathUtils.degToRad( theta ) );
-    //     camera.position.z = radius * Math.cos( THREE.MathUtils.degToRad( theta ) );
-    //     camera.position.y = 3*Math.cos( THREE.MathUtils.degToRad( theta ) );
-    //     camera.lookAt( scene.position );
+function render(now) {
 
-    //     camera.updateMatrixWorld();
+    datatexture.needsUpdate = true;
 
-    // }
+    now *= 0.001;  // convert to seconds
+    const delta = now - then;
+    then = now;
 
+    const width = window.innerWidth;
+    const height = window.innerHeight;
 
-    for (let u = 0; u < clothGeometries.length; u++) {
-        let clothGeometry= clothGeometries[u];
+    camera.aspect = width / height;
+    camera.updateProjectionMatrix();
 
-        for (let index = 0; index < cloths.length; index++) {
-            const element = cloths[index];
-          
-            var p = element.particles;
-    
-            for ( var i = 0, il = p.length; i < il; i ++ ) {
-    
-                var v = p[ i ].position;
-    
-                clothGeometry.attributes.position.setXYZ( i, v.x, v.y, v.z );
-    
-            }
-    
-            clothGeometry.attributes.position.needsUpdate = true;
-    
-            clothGeometry.computeVertexNormals();
-    
-            
-        }
-        
-    }
-
-    for (let index = 0; index < objects.length; index++) {
-        const element = objects[index];
-        element.rotation.z += 0.01;
-        
-    }
-    water.material.uniforms[ 'time' ].value += 1.0 / 60.0;
-
-    const time = Date.now() * 0.0003;
-	const delta = clock.getDelta();
-
-    light1.position.x = Math.sin( time * 0.7 ) * 50;
-    light1.position.y = Math.cos( time * 0.5 ) * 50;
-    light1.position.z = Math.cos( time * 0.3 ) * 50;
-
-    light2.position.x = Math.sin( time * 0.7 ) * 50;
-    light2.position.y = Math.cos( time * 0.3 ) * 50;
-    light2.position.z = Math.cos( time * 0.5 ) * 50;
-
-    light3.position.x = Math.sin( time * 0.2 ) * 50;
-    light3.position.y = Math.cos( time * 0.7 ) * 50;
-    light3.position.z = Math.cos( time * 0.5 ) * 50;
-
-    light4.position.x = Math.sin( time * 0.6 ) * 50;
-    light4.position.y = Math.cos( time * 0.3 ) * 50;
-    light4.position.z = Math.cos( time * 0.5 ) * 50;
+    renderer.setSize( width, height );
 
 
+    composer.setSize(width, height);   
 
-    // render scene with bloom
-    scene.traverse( darkenNonBloomed );
-    bloomComposer.render();
-    scene.traverse( restoreMaterial );
+    const lutInfo = lutTextures[ 0];
 
-    // render the entire scene, then render bloom scene on top
-    finalComposer.render();
+    const effect = lutInfo.filter ? effectLUT : effectLUTNearest;
+    effectLUT.enabled = lutInfo.filter;
+    effectLUTNearest.enabled = !lutInfo.filter;
 
+    const lutTexture = lutInfo.texture;
+    effect.uniforms.lutMap.value = lutTexture;
+    effect.uniforms.lutMapSize.value = lutInfo.size;
+
+    composer.render(delta);
+
+
+    requestAnimationFrame(render);
 
 }
-
-
 
 
 function addObjects(url,x,y,z, scale, rotate, item){
@@ -808,7 +906,7 @@ function addObjects(url,x,y,z, scale, rotate, item){
     }
     if(item===true){
         objects.push(model)
-        model.layers.enable( BLOOM_SCENE );
+        // model.layers.enable( BLOOM_SCENE );
     }
 
     scene.add( model );
@@ -837,8 +935,7 @@ function onWindowResize() {
 
     renderer.setSize( width, height );
 
-    bloomComposer.setSize( width, height );
-    finalComposer.setSize( width, height );
+ 
 
     render();
 }
@@ -859,10 +956,8 @@ function onMouseMove( event ) {
     // Toggle rotation bool for meshes that we clicked
     if ( intersects.length > 0 ) {
 
-        console.log(intersects[0].object);
 
         if(intersects[0].object.userData.title){
-          console.log(intersects[0].object.userData.title);
           
           title.innerHTML = intersects[0].object.userData.title[Math.floor(Math.random() * intersects[0].object.userData.title.length)];
 
@@ -897,5 +992,154 @@ canvas.addEventListener("mouseover", function(){
 canvas.addEventListener("mouseleave", function(){
     title.style.display = "none"
 })
+
+
+
+
+function animate(now) {
+
+    controls.update();
+
+
+    for (let index = 0; index < cloths.length; index++) {
+        const element = cloths[index];
+        simulate( now, element, clothGeometries[index],  element.xvalue, element.yvalue, element.zvalue);
+    }
+
+    // if(rotate===true){
+    //     theta += 0.1;
+    //     if(radius<100){
+    //         radius += 0.05;
+    //     }
+    
+    //     camera.position.x = radius * Math.sin( THREE.MathUtils.degToRad( theta ) );
+    //     camera.position.z = radius * Math.cos( THREE.MathUtils.degToRad( theta ) );
+    //     camera.position.y = 3*Math.cos( THREE.MathUtils.degToRad( theta ) );
+    //     camera.lookAt( scene.position );
+
+    //     camera.updateMatrixWorld();
+
+    // }
+
+    for (let u = 0; u < clothGeometries.length; u++) {
+        let clothGeometry= clothGeometries[u];
+
+        for (let index = 0; index < cloths.length; index++) {
+            const element = cloths[index];
+          
+            var p = element.particles;
+    
+            for ( var i = 0, il = p.length; i < il; i ++ ) {
+    
+                var v = p[ i ].position;
+    
+                clothGeometry.attributes.position.setXYZ( i, v.x, v.y, v.z );
+    
+            }
+    
+            clothGeometry.attributes.position.needsUpdate = true;
+    
+            clothGeometry.computeVertexNormals();
+    
+            
+        }
+        
+    }
+
+    for (let index = 0; index < objects.length; index++) {
+        const element = objects[index];
+        element.rotation.z += 0.01;
+        
+    }
+    water.material.uniforms[ 'time' ].value += 1.0 / 60.0;
+    custom_azimuth ++;
+    if(custom_azimuth>=1){
+        custom_azimuth = 0;
+    }
+
+    const time = Date.now() * 0.0003;
+	const delta = clock.getDelta();
+
+    light1.position.x = Math.sin( time * 0.7 ) * 50;
+    light1.position.y = Math.cos( time * 0.5 ) * 50;
+    light1.position.z = Math.cos( time * 0.3 ) * 50;
+
+    light2.position.x = Math.sin( time * 0.7 ) * 50;
+    light2.position.y = Math.cos( time * 0.3 ) * 50;
+    light2.position.z = Math.cos( time * 0.5 ) * 50;
+
+    light3.position.x = Math.sin( time * 0.2 ) * 50;
+    light3.position.y = Math.cos( time * 0.7 ) * 50;
+    light3.position.z = Math.cos( time * 0.5 ) * 50;
+
+    light4.position.x = Math.sin( time * 0.6 ) * 50;
+    light4.position.y = Math.cos( time * 0.3 ) * 50;
+    light4.position.z = Math.cos( time * 0.5 ) * 50;
+
+    requestAnimationFrame( animate );
+
+
+
+
+}
+
+
+
+function onClick() {
+    event.preventDefault();
+  
+    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+  
+    raycaster.setFromCamera(mouse, camera);
+  
+    var intersects = raycaster.intersectObjects(scene.children, true);
+  
+    if (intersects.length > 0) {
+  
+      if(intersects[0].object){
+          console.log(intersects[0].object);
+          if(intersects[0].object.userData.url){
+            window.location = intersects[0].object.userData.url;
+          }
+        
+      }
+    
+  
+     
+  
+    }
+  
+}
+let screenshot_count = 0;
+
+document.addEventListener("keypress", function(event) {
+    
+    if(event.charCode === 115){
+        let filename = "three-screenshot"+screenshot_count
+        createImage(filename, 791, 791)
+        screenshot_count ++;
+    }
+
+});
+
+function createImage(saveAsFileName,width,height) {
+
+    camera.aspect = width / height;
+    camera.updateProjectionMatrix();
+    renderer.setSize(  width, height );
+  
+    renderer.render( scene, camera, null, false );
+
+    var url = canvas.toDataURL("image/jpeg", 1.0);
+
+    var link = document.createElement('a');
+
+    link.setAttribute('href', url);
+    link.setAttribute('target', '_blank');
+    link.setAttribute('download', saveAsFileName);
+
+    link.click();
+}
 
 

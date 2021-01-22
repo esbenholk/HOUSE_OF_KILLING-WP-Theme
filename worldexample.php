@@ -1,6 +1,7 @@
 <?php /* Template Name: world example */ ?>
 
 
+
 <?php
 /**
  * The template for displaying all pages.
@@ -30,11 +31,8 @@
 
 
 
-
 <?php $src = get_stylesheet_directory_uri().'/js/lightbloom-controls.js';?>
-
 <script type="module" src="<?php echo esc_url($src); ?>"></script>
-
 
 <div id="threeDfrontpage" class="col-md-12">
     <div  id='loading-screen' class="loading-container">
@@ -45,15 +43,36 @@
                 </div>
             </div>
     </div>
+
+    <div id="canvas-container">
+		<canvas id="HTMLcanvas"></canvas>
+	</div>
 	
 	<div id="canvas" class="online-exhibition-canvas">
-      
-    
+        <canvas id="c" style="width:100%;height:100%;"></canvas>
+        <p id="canvas-title">avatar island</p>
+
+        <div id="canvas-details">
+            <div class="instruction neon-box">	
+                        <div class="absolute left flex-row">
+                            <div class="dot neon-box"></div>
+                            <div class="dot neon-box"></div>
+                        </div>
+                        <p>
+                            <p id="project-title">
+                                <?php echo $my_excerpt ?>
+                            </p>
+
+                        </p>
+                    
+            </div>
+        </div>	
+        
+
 
 
     </div>
 			
-	
 
 
 	<script type="x-shader/x-vertex" id="vertexshader">
@@ -97,10 +116,7 @@
 
 
 	
+<?php get_footer(); ?>
 
 
 	
-
-		
-
-

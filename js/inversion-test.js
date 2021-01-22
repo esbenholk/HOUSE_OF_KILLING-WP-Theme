@@ -32,6 +32,8 @@ const camera = new THREE.PerspectiveCamera( 55, window.innerWidth / window.inner
 camera.position.set( 10, 100, 100 );
 camera.lookAt( 0, 0, 0 );
 
+
+
 var stats = new Stats();
 let clock = new THREE.Clock();
 let sun = new THREE.Vector3();
@@ -998,6 +1000,8 @@ canvas.addEventListener("mouseleave", function(){
 
 
 function animate(now) {
+
+
 
     for (let index = 0; index < cloths.length; index++) {
         const element = cloths[index];
