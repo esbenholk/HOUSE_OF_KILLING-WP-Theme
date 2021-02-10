@@ -1,7 +1,6 @@
 <?php
 /**
  * The template for displaying all single posts (pdf booklets)
- * and other stuff
  * @link https://developer.wordpress.org/themes/basics/template-hierarchy/#single-post
  *
  * @package HOUSE_of_KILLLING
